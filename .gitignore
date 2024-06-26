@@ -1,0 +1,8 @@
+# Trash and build folders
+/x64/
+/Release/
+/Debug/
+/.vs/
+
+# imgui last known windows pos config
+/imgui.ini
