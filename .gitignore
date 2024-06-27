@@ -3,7 +3,7 @@
 /Release/
 /Debug/
 /.vs/
+/MSTGenetic/x64/
 
 # imgui last known windows pos config
 /imgui.ini
-/MSTGenetic/x64/Debug
