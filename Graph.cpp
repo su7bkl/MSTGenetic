@@ -83,7 +83,7 @@ namespace matrix {
 			|| edge.first.second < 0 || edge.first.second >= this->vertexCount) {
 			throw std::out_of_range("Vertex id out of range");
 		}
-		if (i.first.first == i.first.second) {
+		if (edge.first.first == edge.first.second) {
 			throw std::invalid_argument("Attempt to add loop edge");
 		}
 		this->edgeCount++;
@@ -110,12 +110,39 @@ namespace matrix {
 		return this->vertices[id];
 	}
 
+	/**
+	* Возвращает длину ребра между двумя вершинами
+	* Если ребра нет возвращает -1.
+	* Если указанные вершины отутствуют в графе
+	* бросает исключение out_of_range
+	*/
 	int Graph::getEgdeLength(Terminals terminals) {
 		if (terminals.first < 0 || terminals.first >= this->vertexCount
 			|| terminals.second < 0 || terminals.second >= this->vertexCount) {
 			throw std::out_of_range("Vertex id out of range");
 		}
+		if (this->ajacencyMatrix[terminals.first][terminals.second] == 0) {
+			return -1;
+		}
 		return this->ajacencyMatrix[terminals.first][terminals.second];
+	}
+	
+	/**
+	* Меняет длину ребра между двумя вершинами
+	* Если ребра нет бросает исключение invalid_argument.
+	* Если указанные вершины отутствуют в графе
+	* бросает исключение out_of_range
+	*/
+	void Graph::changeEgdeLength(Terminals terminals, int newLength) {
+		if (terminals.first < 0 || terminals.first >= this->vertexCount
+			|| terminals.second < 0 || terminals.second >= this->vertexCount) {
+			throw std::out_of_range("Vertex id out of range");
+		}
+		if (this->ajacencyMatrix[terminals.first][terminals.second] == 0) {
+			throw std::invalid_argument("Attempt to change length of non-existent edge");
+		}
+		this->ajacencyMatrix[terminals.first][terminals.second] = newLength;
+		this->ajacencyMatrix[terminals.second][terminals.first] = newLength;
 	}
 
 	bool Graph::isConnected() {

@@ -44,6 +44,7 @@ namespace matrix {
 		std::vector<Vertex> getVertices();
 		Vertex getVertex(int id);
 		int getEgdeLength(Terminals terminals);
+		void changeEgdeLength(Terminals terminals, int newLength);
 		void removeLastVertex();
 		bool isConnected();
 	};
