@@ -23,6 +23,9 @@ namespace matrix {
 		Coords getPos();
 		int getX();
 		int getY();
+		void setPos(Coords newPos);
+		void setX(int newX);
+		void setY(int newX);
 	};
 
 	class Graph {
@@ -41,6 +44,7 @@ namespace matrix {
 		std::vector<Vertex> getVertices();
 		Vertex getVertex(int id);
 		int getEgdeLength(Terminals terminals);
+		void removeLastVertex();
 		bool isConnected();
 	};
 }
