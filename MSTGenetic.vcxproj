@@ -76,7 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(projectDir)\libs\glfw\include;$(projectDir)\libs\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(projectDir)\libs\glfw\include;$(projectDir)\libs\imgui;$(projectDir)\;$(projectDir)\libs\implot;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -94,7 +94,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(projectDir)\libs\glfw\include;$(projectDir)\libs\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(projectDir)\libs\glfw\include;$(projectDir)\libs\imgui;$(projectDir)\;$(projectDir)\libs\implot;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -112,7 +112,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(projectDir)\libs\glfw\include;$(projectDir)\libs\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(projectDir)\libs\glfw\include;$(projectDir)\libs\imgui;$(projectDir)\;$(projectDir)\libs\implot;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -130,7 +130,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(projectDir)\libs\glfw\include;$(projectDir)\libs\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(projectDir)\libs\glfw\include;$(projectDir)\libs\imgui;$(projectDir)\;$(projectDir)\libs\implot;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -143,6 +143,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="dummy\Chromosome.cpp" />
+    <ClCompile Include="dummy\Graph.cpp" />
+    <ClCompile Include="gui\GAStateWindow.cpp" />
+    <ClCompile Include="gui\EpochWindow.cpp" />
+    <ClCompile Include="gui\GASettingsWindow.cpp" />
+    <ClCompile Include="gui\DataWindow.cpp" />
+    <ClCompile Include="gui\App.cpp" />
     <ClCompile Include="libs\imgui\imgui.cpp" />
     <ClCompile Include="libs\imgui\imgui_demo.cpp" />
     <ClCompile Include="libs\imgui\imgui_draw.cpp" />
@@ -150,9 +157,21 @@
     <ClCompile Include="libs\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="libs\imgui\imgui_tables.cpp" />
     <ClCompile Include="libs\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="libs\implot\implot.cpp" />
+    <ClCompile Include="libs\implot\implot_demo.cpp" />
+    <ClCompile Include="libs\implot\implot_items.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="gui\WindowBase.cpp" />
+    <ClCompile Include="dummy\Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dummy\Chromosome.h" />
+    <ClInclude Include="dummy\Graph.h" />
+    <ClInclude Include="gui\GAStateWindow.h" />
+    <ClInclude Include="gui\EpochWindow.h" />
+    <ClInclude Include="gui\GASettingsWindow.h" />
+    <ClInclude Include="gui\DataWindow.h" />
+    <ClInclude Include="gui\App.h" />
     <ClInclude Include="libs\glfw\include\GLFW\glfw3.h" />
     <ClInclude Include="libs\glfw\include\GLFW\glfw3native.h" />
     <ClInclude Include="libs\imgui\imconfig.h" />
@@ -164,9 +183,16 @@
     <ClInclude Include="libs\imgui\imstb_rectpack.h" />
     <ClInclude Include="libs\imgui\imstb_textedit.h" />
     <ClInclude Include="libs\imgui\imstb_truetype.h" />
+    <ClInclude Include="gui\WindowBase.h" />
+    <ClInclude Include="dummy\Vertex.h" />
+    <ClInclude Include="libs\implot\implot.h" />
+    <ClInclude Include="libs\implot\implot_internal.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="libs\glfw\lib-vc2022\glfw3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="fonts\consolas.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
