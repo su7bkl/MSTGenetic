@@ -35,7 +35,7 @@ namespace genetic {
 				}
 			}
 		}
-		fitness += (int)std::round(std::log2(this->getGraph().getConnectedComponentsCount()) * this->basicGraph.getUpperMSTEstiamate());
+		fitness += (int)std::round(std::log(this->getGraph().getConnectedComponentsCount()) * this->basicGraph.getTotalEdgeLength());
 		return fitness;
 	}
 }
