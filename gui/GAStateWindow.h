@@ -5,12 +5,11 @@
 class GAStateWindow : public WindowBase
 {
 private:
-	std::vector<float> epoch;
-	std::vector<float> best;
-	std::vector<float> avg;
+    std::vector<float> epoch;
+    std::vector<float> best;
+    std::vector<float> avg;
 
 public:
-	GAStateWindow();
-	void render() override;
+    GAStateWindow();
+    void render() override;
 };
-

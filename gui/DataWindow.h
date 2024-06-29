@@ -5,9 +5,9 @@
 class DataWindow : public  WindowBase
 {
 private:
-	Graph& graph;
+    Graph& graph;
 
 public:
-	DataWindow(Graph& graph);
-	void render() override;
+    DataWindow(Graph& graph);
+    void render() override;
 };

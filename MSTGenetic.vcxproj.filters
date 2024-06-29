@@ -150,4 +150,7 @@
   <ItemGroup>
     <Font Include="fonts\consolas.ttf" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
+  </ItemGroup>
 </Project>

@@ -67,29 +67,29 @@ EpochWindow::EpochWindow(Graph& graph) : graph(graph), chromosomesSortingRequire
 
 void EpochWindow::render()
 {
-	if (!ImGui::Begin((const char*)u8"Информация об эпохе"))
+	if (!ImGui::Begin((const char*)u8"РРЅС„РѕСЂРјР°С†РёСЏ РѕР± СЌРїРѕС…Рµ"))
 		return ImGui::End();
 	
 	static int selectedChromosome = -1;
 
-	ImGui::Button((const char*)u8"До конца");
+	ImGui::Button((const char*)u8"Р”Рѕ РєРѕРЅС†Р°");
 	ImGui::SameLine();
-	if (ImGui::Button((const char*)u8"Эпоха вперёд")) {
+	if (ImGui::Button((const char*)u8"Р­РїРѕС…Р° РІРїРµСЂС‘Рґ")) {
 		selectedChromosome = -1;
 		this->regenerateChromosomes();
 	}
 	ImGui::SameLine();
-	ImGui::Button((const char*)u8"Эпоха назад");
+	ImGui::Button((const char*)u8"Р­РїРѕС…Р° РЅР°Р·Р°Рґ");
 
 	ImGui::SameLine();
-	ImGui::Button((const char*)u8"Остановить");
+	ImGui::Button((const char*)u8"РћСЃС‚Р°РЅРѕРІРёС‚СЊ");
 
 	const ImGuiTableFlags tableFlags = ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_RowBg | ImGuiTableFlags_Sortable;
 	const ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_None;
 
 	if (ImGui::BeginTable("chromosomes_table", 2, tableFlags, ImVec2(0, 200))) {
 		ImGui::TableSetupColumn((const char*)u8"ID", columnFlags);
-		ImGui::TableSetupColumn((const char*)u8"Значение целевой функции", columnFlags);
+		ImGui::TableSetupColumn((const char*)u8"Р—РЅР°С‡РµРЅРёРµ С†РµР»РµРІРѕР№ С„СѓРЅРєС†РёРё", columnFlags);
 
 		ImGui::TableSetupScrollFreeze(0, 1);
 		ImGui::TableHeadersRow();
@@ -111,15 +111,15 @@ void EpochWindow::render()
 	if (selectedChromosome == -1)
 		return ImGui::End();
 
-	ImGui::SeparatorText((const char*)u8"Информация о выбранной хромосоме");
+	ImGui::SeparatorText((const char*)u8"РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РІС‹Р±СЂР°РЅРЅРѕР№ С…СЂРѕРјРѕСЃРѕРјРµ");
 
-	ImGui::Text((const char*)u8"Геном");
+	ImGui::Text((const char*)u8"Р“РµРЅРѕРј");
 
 	const ImGuiTableFlags genomeTableFlags = ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollX | ImGuiTableFlags_SizingFixedFit;
 	const ImGuiTableColumnFlags genomeColumnFlags = ImGuiTableColumnFlags_None;
 
 	if (ImGui::BeginTable("genome_table", this->edges.size() + 1, genomeTableFlags, ImVec2(0, 50))) {
-		ImGui::TableSetupColumn((const char*)u8"Ребро", genomeColumnFlags);
+		ImGui::TableSetupColumn((const char*)u8"Р РµР±СЂРѕ", genomeColumnFlags);
 		for (const auto& edge : this->edges)
 			ImGui::TableSetupColumn(std::format("{},{}", edge.first, edge.second).c_str(), genomeColumnFlags);
 
@@ -128,7 +128,7 @@ void EpochWindow::render()
 		ImGui::TableHeadersRow();
 		ImGui::TableNextRow();
 		ImGui::TableSetColumnIndex(0);
-		ImGui::Text((const char*)u8"Включено");
+		ImGui::Text((const char*)u8"Р’РєР»СЋС‡РµРЅРѕ");
 		for (int edgeIndex = 0; edgeIndex < this->edges.size(); edgeIndex++) {
 			ImGui::TableSetColumnIndex(edgeIndex + 1);
 			ImGui::Text(this->chromosomes.at(selectedChromosome).getGenome().at(edgeIndex) ? "1" : "0");
@@ -138,14 +138,14 @@ void EpochWindow::render()
 
 	ImGui::Spacing();
 	ImGui::AlignTextToFramePadding();
-	ImGui::Text((const char*)u8"Связность графа:");
+	ImGui::Text((const char*)u8"РЎРІСЏР·РЅРѕСЃС‚СЊ РіСЂР°С„Р°:");
 	ImGui::SameLine();
 	ImGui::BeginDisabled();
 	bool isConnected = this->chromosomes.at(selectedChromosome).getIsConnected();
 	ImGui::Checkbox("##", &isConnected);
 	ImGui::EndDisabled();
 
-	ImGui::Text((const char*)u8"Представление подграфа:");
+	ImGui::Text((const char*)u8"РџСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ РїРѕРґРіСЂР°С„Р°:");
 
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 	ImVec2 origin = ImGui::GetCursorScreenPos();

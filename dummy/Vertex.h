@@ -2,9 +2,9 @@
 
 struct Vertex
 {
-	float x, y;
+    float x, y;
 
-	Vertex();
-	Vertex(float xy);
-	Vertex(float x, float  y);
+    Vertex();
+    Vertex(float xy);
+    Vertex(float x, float  y);
 };

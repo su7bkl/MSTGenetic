@@ -2,13 +2,13 @@
 
 void WindowBase::cleanUp()
 {
-	if (this->disposed)
-		return;
+    if (this->disposed)
+        return;
 
-	this->disposed = true;
+    this->disposed = true;
 }
 
 WindowBase::~WindowBase()
 {
-	this->cleanUp();
+    this->cleanUp();
 }

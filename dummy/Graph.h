@@ -5,17 +5,16 @@
 class Graph
 {
 private:
-	std::vector<Vertex> vertices;
-	std::vector<std::vector<int>> adjacencyMatrix;
+    std::vector<Vertex> vertices;
+    std::vector<std::vector<int>> adjacencyMatrix;
 
 public:
-	Graph(int vertices);
+    Graph(int vertices);
 
-	int getVerticesCount() const;
-	void setVerticesCount(int value);
-	int getEdge(int vertex1, int vertex2) const;
+    int getVerticesCount() const;
+    void setVerticesCount(int value);
+    int getEdge(int vertex1, int vertex2) const;
 
-	std::vector<std::vector<int>>& getAdjacencyMatrix();
-	std::vector<Vertex>& getVertices();
+    std::vector<std::vector<int>>& getAdjacencyMatrix();
+    std::vector<Vertex>& getVertices();
 };
-

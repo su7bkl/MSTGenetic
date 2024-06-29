@@ -11,7 +11,7 @@ Chromosome::Chromosome(const Graph& graph) : graph(graph)
 
     this->genome.resize(edgesCount);
     for (auto gen : this->genome)
-        gen = std::rand() % 2  == 0;
+        gen = std::rand() % 2 == 0;
 
     this->targetFunctionValue = std::rand() % 5000 / 2.0f;
     this->isConnected = std::rand() % 2 == 0;

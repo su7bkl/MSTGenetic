@@ -4,10 +4,7 @@
 class GASettingsWindow : public WindowBase
 {
 public:
-	GASettingsWindow();
+    GASettingsWindow();
 
-	void render() override;
+    void render() override;
 };
-
-
-

@@ -14,7 +14,7 @@ GAStateWindow::GAStateWindow() : epoch(17), best(17), avg(17)
 
 void GAStateWindow::render()
 {
-	if (!ImGui::Begin((const char*)u8"Ñîñòîÿíèå ÃÀ"))
+	if (!ImGui::Begin((const char*)u8"Ð¡Ð¾ÑÑ‚Ð¾ÑÐ½Ð¸Ðµ Ð“Ð"))
 		return ImGui::End();
 
 	const int currentEpoch = 17;
@@ -22,18 +22,18 @@ void GAStateWindow::render()
 	const float bestTargetFunctionValue = 732.0f;
 	const float avgTargetFunctionValue = 1032.0f;
 
-	ImGui::Text((const char*)u8"Ýïîõà: %d èç %d", currentEpoch, maxEpoch);
-	ImGui::Text((const char*)u8"Ëó÷øåå çíà÷åíèå öåëåâîé ôóíêöèè: %.3f", bestTargetFunctionValue);
-	ImGui::Text((const char*)u8"Ñðåäíåå çíà÷åíèå öåëåâîé ôóíêöèè: %.3f", avgTargetFunctionValue);
+	ImGui::Text((const char*)u8"Ð­Ð¿Ð¾Ñ…Ð°: %d Ð¸Ð· %d", currentEpoch, maxEpoch);
+	ImGui::Text((const char*)u8"Ð›ÑƒÑ‡ÑˆÐµÐµ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ Ñ†ÐµÐ»ÐµÐ²Ð¾Ð¹ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸: %.3f", bestTargetFunctionValue);
+	ImGui::Text((const char*)u8"Ð¡Ñ€ÐµÐ´Ð½ÐµÐµ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ Ñ†ÐµÐ»ÐµÐ²Ð¾Ð¹ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¸: %.3f", avgTargetFunctionValue);
 
 	if (ImPlot::BeginPlot((const char*)u8"##", ImVec2(-1, -1))) {
-		ImPlot::SetupAxes((const char*)u8"Ýïîõà", (const char*)u8"F");
+		ImPlot::SetupAxes((const char*)u8"Ð­Ð¿Ð¾Ñ…Ð°", (const char*)u8"F");
 
 		ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle);
-		ImPlot::PlotLine((const char*)u8"Ëó÷øåå", this->epoch.data(), this->best.data(), this->epoch.size());
+		ImPlot::PlotLine((const char*)u8"Ð›ÑƒÑ‡ÑˆÐµÐµ", this->epoch.data(), this->best.data(), this->epoch.size());
 
 		ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle);
-		ImPlot::PlotLine((const char*)u8"Ñðåäíåå", this->epoch.data(), this->avg.data(), this->epoch.size());
+		ImPlot::PlotLine((const char*)u8"Ð¡Ñ€ÐµÐ´Ð½ÐµÐµ", this->epoch.data(), this->avg.data(), this->epoch.size());
 
 		ImPlot::EndPlot();
 	}

@@ -8,7 +8,7 @@ GASettingsWindow::GASettingsWindow()
 
 void GASettingsWindow::render()
 {
-	if (!ImGui::Begin((const char*)u8"Настройки ГА"))
+	if (!ImGui::Begin((const char*)u8"РќР°СЃС‚СЂРѕР№РєРё Р“Рђ"))
 		return ImGui::End();
 
 	static int populationSize = 1;
@@ -19,33 +19,33 @@ void GASettingsWindow::render()
 	static int crossingType = 0;
 	static int selectionType = 0;
 
-	const char* crossingTypeNames[] = { (const char*)u8"Одноточечное", (const char*)u8"Двухточечное", (const char*)u8"Равномерное" };
-	const char* selectionTypeNames[] = { (const char*)u8"Рулетка", (const char*)u8"Ранжирование", (const char*)u8"Равномерное" };
+	const char* crossingTypeNames[] = { (const char*)u8"РћРґРЅРѕС‚РѕС‡РµС‡РЅРѕРµ", (const char*)u8"Р”РІСѓС…С‚РѕС‡РµС‡РЅРѕРµ", (const char*)u8"Р Р°РІРЅРѕРјРµСЂРЅРѕРµ" };
+	const char* selectionTypeNames[] = { (const char*)u8"Р СѓР»РµС‚РєР°", (const char*)u8"Р Р°РЅР¶РёСЂРѕРІР°РЅРёРµ", (const char*)u8"Р Р°РІРЅРѕРјРµСЂРЅРѕРµ" };
 
 	static float uniformSelectionBorders[2] = { 0.0f , 1.0f };
 
-	ImGui::InputInt((const char*)u8"Размер популяции", &populationSize, 10, 100);
+	ImGui::InputInt((const char*)u8"Р Р°Р·РјРµСЂ РїРѕРїСѓР»СЏС†РёРё", &populationSize, 10, 100);
 	populationSize = std::max(populationSize, 1);
 
-	ImGui::InputInt((const char*)u8"Число эпох", &epochCount, 10, 100);
+	ImGui::InputInt((const char*)u8"Р§РёСЃР»Рѕ СЌРїРѕС…", &epochCount, 10, 100);
 	epochCount = std::max(epochCount, 1);
 
 	ImGui::Spacing();
 
-	ImGui::SliderFloat((const char*)u8"Вероятность мутации", &mutationPobability, 0, 1);
-	ImGui::SliderFloat((const char*)u8"Вероятность скрещивания", &crossingPobability, 0, 1);
+	ImGui::SliderFloat((const char*)u8"Р’РµСЂРѕСЏС‚РЅРѕСЃС‚СЊ РјСѓС‚Р°С†РёРё", &mutationPobability, 0, 1);
+	ImGui::SliderFloat((const char*)u8"Р’РµСЂРѕСЏС‚РЅРѕСЃС‚СЊ СЃРєСЂРµС‰РёРІР°РЅРёСЏ", &crossingPobability, 0, 1);
 
 	ImGui::Spacing();
 
-	ImGui::Combo((const char*)u8"Вид скрещивания", &crossingType, crossingTypeNames, IM_ARRAYSIZE(crossingTypeNames));
-	ImGui::Combo((const char*)u8"Вид отбора", &selectionType, selectionTypeNames, IM_ARRAYSIZE(selectionTypeNames));
+	ImGui::Combo((const char*)u8"Р’РёРґ СЃРєСЂРµС‰РёРІР°РЅРёСЏ", &crossingType, crossingTypeNames, IM_ARRAYSIZE(crossingTypeNames));
+	ImGui::Combo((const char*)u8"Р’РёРґ РѕС‚Р±РѕСЂР°", &selectionType, selectionTypeNames, IM_ARRAYSIZE(selectionTypeNames));
 
 	ImGui::Spacing();
 
 	if (selectionType != 2)
 		ImGui::BeginDisabled();
 
-	ImGui::InputFloat2((const char*)u8"Диапазон значений при равномерном отборе", uniformSelectionBorders);
+	ImGui::InputFloat2((const char*)u8"Р”РёР°РїР°Р·РѕРЅ Р·РЅР°С‡РµРЅРёР№ РїСЂРё СЂР°РІРЅРѕРјРµСЂРЅРѕРј РѕС‚Р±РѕСЂРµ", uniformSelectionBorders);
 	uniformSelectionBorders[1] = std::max(uniformSelectionBorders[0] + 1.0f, uniformSelectionBorders[1]);
 
 	if (selectionType != 2)

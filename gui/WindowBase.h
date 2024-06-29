@@ -3,11 +3,10 @@
 class WindowBase
 {
 private:
-	bool disposed = false;
+    bool disposed = false;
 
 public:
-	virtual void render() = 0;
-	virtual void cleanUp();
-	virtual ~WindowBase();
+    virtual void render() = 0;
+    virtual void cleanUp();
+    virtual ~WindowBase();
 };
-

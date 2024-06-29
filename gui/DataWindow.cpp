@@ -10,31 +10,31 @@ DataWindow::DataWindow(Graph& graph) : graph(graph)
 
 void DataWindow::render()
 {
-	if (!ImGui::Begin((const char*)u8"Данные"))
+	if (!ImGui::Begin((const char*)u8"Р”Р°РЅРЅС‹Рµ"))
 		return ImGui::End();
 
 	int verticesCount = this->graph.getVerticesCount();
-	ImGui::InputInt((const char*)u8"Число вершин", &verticesCount, 1, 10);
+	ImGui::InputInt((const char*)u8"Р§РёСЃР»Рѕ РІРµСЂС€РёРЅ", &verticesCount, 1, 10);
 	verticesCount = std::clamp(verticesCount, 2, 500);
 	this->graph.setVerticesCount(verticesCount);
 
-	if (ImGui::Button((const char*)u8"Импорт из файла"))
+	if (ImGui::Button((const char*)u8"РРјРїРѕСЂС‚ РёР· С„Р°Р№Р»Р°"))
 		ImGui::OpenPopup("file_import_popup");
 	if (ImGui::BeginPopup("file_import_popup")) {
-		ImGui::Text((const char*)u8"Какой-то импорт из файла...");
+		ImGui::Text((const char*)u8"РљР°РєРѕР№-С‚Рѕ РёРјРїРѕСЂС‚ РёР· С„Р°Р№Р»Р°...");
 		ImGui::EndPopup();
 	}
 
 	ImGui::SameLine();
 
-	if (ImGui::Button((const char*)u8"Рандомная генерация"))
+	if (ImGui::Button((const char*)u8"Р Р°РЅРґРѕРјРЅР°СЏ РіРµРЅРµСЂР°С†РёСЏ"))
 		ImGui::OpenPopup("random_generation_popup");
 	if (ImGui::BeginPopup("random_generation_popup")) {
-		ImGui::Text((const char*)u8"Что-то рандомно происходит...");
+		ImGui::Text((const char*)u8"Р§С‚Рѕ-С‚Рѕ СЂР°РЅРґРѕРјРЅРѕ РїСЂРѕРёСЃС…РѕРґРёС‚...");
 		ImGui::EndPopup();
 	}
 
-	ImGui::SeparatorText((const char*)u8"Матрица смежности");
+	ImGui::SeparatorText((const char*)u8"РњР°С‚СЂРёС†Р° СЃРјРµР¶РЅРѕСЃС‚Рё");
 
 	const ImGuiTableFlags tableFlags = ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Resizable;
 	const ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_WidthFixed;
@@ -76,7 +76,7 @@ void DataWindow::render()
 		ImGui::EndTable();
 	}
 
-	ImGui::SeparatorText((const char*)u8"Визуальное представление");
+	ImGui::SeparatorText((const char*)u8"Р’РёР·СѓР°Р»СЊРЅРѕРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ");
 
 	ImDrawList* drawList = ImGui::GetWindowDrawList();
 	ImVec2 origin = ImGui::GetCursorScreenPos();
