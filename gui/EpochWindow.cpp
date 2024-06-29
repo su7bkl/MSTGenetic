@@ -81,6 +81,9 @@ void EpochWindow::render()
 	ImGui::SameLine();
 	ImGui::Button((const char*)u8"Ёпоха назад");
 
+	ImGui::SameLine();
+	ImGui::Button((const char*)u8"ќстановить");
+
 	const ImGuiTableFlags tableFlags = ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_RowBg | ImGuiTableFlags_Sortable;
 	const ImGuiTableColumnFlags columnFlags = ImGuiTableColumnFlags_None;
 
