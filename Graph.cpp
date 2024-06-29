@@ -1,7 +1,7 @@
 ﻿#include "Graph.h"
 
 
-namespace matrix {
+namespace genetic {
 	Vertex::Vertex() {
 		this->pos = { std::rand() % MAX_X, std::rand() % MAX_Y };
 	}
@@ -33,7 +33,7 @@ namespace matrix {
 	void Vertex::setY(int newY) {
 		this->pos.second = newY;
 	}
-	
+
 	/**
 	* Конструктор пустого графа
 	*/
@@ -43,12 +43,12 @@ namespace matrix {
 	}
 
 	/**
-	* Конструктор графа из вектора вершин vertices и вектора 
+	* Конструктор графа из вектора вершин vertices и вектора
 	* рёбер edges
-	* Так как граф неориентированный и не является мультиграфом, 
-	* в edges не должно содержаться 2-х рёбер с одинаковыми 
+	* Так как граф неориентированный и не является мультиграфом,
+	* в edges не должно содержаться 2-х рёбер с одинаковыми
 	* начальной и конечной точками.
-	* Если один из терминалов ребра содержит id вершины 
+	* Если один из терминалов ребра содержит id вершины
 	* меньшее ноля или большее или равное количеству рёбер в графе
 	* выбрасывается исключение.
 	*/
@@ -123,7 +123,15 @@ namespace matrix {
 		}
 		return this->ajacencyMatrix[terminals.first][terminals.second];
 	}
-	
+
+	int Graph::getTotalEdgeLength() {
+		int result = 0;
+		for (int i = 0; i < this->vertexCount; i++) {
+			result += std::accumulate(this->ajacencyMatrix[i].begin(), this->ajacencyMatrix[i].end(), 0);
+		}
+		return (result / 2);
+	}
+
 	/**
 	* Меняет длину ребра между двумя вершинами
 	* Если ребра нет бросает исключение invalid_argument.
@@ -142,7 +150,7 @@ namespace matrix {
 		this->ajacencyMatrix[terminals.second][terminals.first] = newLength;
 	}
 
-	bool Graph::isConnected() {
+	int Graph::getConnectedComponentsCount() {
 		std::unordered_set<int> visited;
 		std::stack<int> stack;
 		int counter = 0;
@@ -164,7 +172,28 @@ namespace matrix {
 				}
 			}
 		}
-		return counter == 1;
+		return counter;
+	}
+
+	int Graph::getUpperMSTEstiamate() {
+		int edgeId = 0;
+		int result = 0;
+		for (int i = 1; i < this->getVeretexCount(); i++) {
+			for (int j = 0; j < i; j++) {
+				if (edgeId == this->vertexCount - 1) {
+					return result;
+				}
+				if (this->getEgdeLength({ i, j }) != 0) {
+					result += this->getEgdeLength({ i, j });
+					edgeId++;
+				}
+			}
+		}
+		return result;
+	}
+
+	bool Graph::isConnected() {
+		return this->getConnectedComponentsCount() == 1;
 	}
 
 	void Graph::removeLastVertex() {

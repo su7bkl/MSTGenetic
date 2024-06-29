@@ -4,12 +4,13 @@
 #include <stack>
 #include <cstdlib>
 #include <stdexcept>
+#include <numeric>
 
 #define MAX_X 500
 #define MAX_Y 500
 
 
-namespace matrix {
+namespace genetic {
 	typedef std::pair<int, int> Coords;
 	typedef std::pair<int, int> Terminals;
 	typedef std::pair<Terminals, int> Edge;
@@ -44,6 +45,9 @@ namespace matrix {
 		std::vector<Vertex> getVertices();
 		Vertex getVertex(int id);
 		int getEgdeLength(Terminals terminals);
+		int getTotalEdgeLength();
+		int getConnectedComponentsCount();
+		int getUpperMSTEstiamate();
 		void changeEgdeLength(Terminals terminals, int newLength);
 		void removeLastVertex();
 		bool isConnected();
