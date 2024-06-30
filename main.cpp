@@ -80,7 +80,7 @@ int main(int, char**)
     ImGuiIO& io = ImGui::GetIO();
 
     // инициализация приложения
-    App application = App();
+    gui::App application = gui::App();
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);

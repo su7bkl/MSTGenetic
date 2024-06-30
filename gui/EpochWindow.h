@@ -5,23 +5,25 @@
 #include <vector>
 #include <imgui.h>
 
-class EpochWindow : public BaseWindow
-{
-private:
-    // будет убрано
-    void regenerateChromosomes();
-    std::vector<Chromosome> chromosomes;
-    std::vector<std::pair<int, int>> edges;
+namespace gui {
+    class EpochWindow : public BaseWindow
+    {
+    private:
+        // будет убрано
+        void regenerateChromosomes();
+        std::vector<Chromosome> chromosomes;
+        std::vector<std::pair<int, int>> edges;
 
-    Graph& graph;
+        Graph& graph;
 
-    std::vector<int> chromosomesOrder;
-    bool chromosomesSortingRequired;
+        std::vector<int> chromosomesOrder;
+        bool chromosomesSortingRequired;
 
-    void sortChromosomes(ImGuiTableSortSpecs* sortSpecs);
-    bool chromosomesComparator(ImGuiTableSortSpecs* sortSpecs, const int& left, const int& right) const;
+        void sortChromosomes(ImGuiTableSortSpecs* sortSpecs);
+        bool chromosomesComparator(ImGuiTableSortSpecs* sortSpecs, const int& left, const int& right) const;
 
-public:
-    EpochWindow(Graph& graph);
-    void render() override;
-};
+    public:
+        EpochWindow(Graph& graph);
+        void render() override;
+    };
+}

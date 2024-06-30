@@ -1,16 +1,18 @@
 #include "gui/BaseWindow.h"
 
-void BaseWindow::cleanUp()
-{
-    if (this->disposed)
-        return;
+namespace gui {
+    void BaseWindow::cleanUp()
+    {
+        if (this->disposed)
+            return;
 
-    this->cleanUpLogic();
+        this->cleanUpLogic();
 
-    this->disposed = true;
-}
+        this->disposed = true;
+    }
 
-BaseWindow::~BaseWindow()
-{
-    this->cleanUp();
+    BaseWindow::~BaseWindow()
+    {
+        this->cleanUp();
+    }
 }

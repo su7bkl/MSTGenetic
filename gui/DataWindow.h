@@ -2,12 +2,14 @@
 #include "gui/BaseWindow.h"
 #include "dummy/Graph.h"
 
-class DataWindow : public BaseWindow
-{
-private:
-    Graph& graph;
+namespace gui {
+    class DataWindow : public BaseWindow
+    {
+    private:
+        Graph& graph;
 
-public:
-    DataWindow(Graph& graph);
-    void render() override;
-};
+    public:
+        DataWindow(Graph& graph);
+        void render() override;
+    };
+}
