@@ -79,7 +79,8 @@ namespace gui {
                 ImGui::EndTable();
             }
 
-            ImGui::SeparatorText((const char*)u8"Визуальное представление");
+            ImGui::SeparatorText((const char*)u8"Визуальное представление [?]");
+            ImGui::SetItemTooltip((const char*)u8"Вершины графа можно перетаскивать");
 
             // отрисовка графа
             constexpr ImGuiChildFlags GRAPH_RENDER_CHILD_FLAGS = ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeX;
