@@ -1,41 +1,53 @@
 #include "Genetic.h"
 
 namespace genetic {
+	int Chromosome::getEdgeCount() {
+		int res = 0;
+		for(bool i : this->included) {
+			if(i) res++;
+		}
+		return res;
+	}
+
 	Chromosome::Chromosome(Graph& graph) {
 		this->included.resize(graph.getVeretexCount());
-		this->basicGraph = graph;
+		this->basicGraph = &graph;
 	}
 
 	Graph Chromosome::getGraph() {
 		int edgeId = 0;
 		std::vector<Edge> includedEdges;
-		for (int i = 1; i < this->basicGraph.getVeretexCount(); i++) {
+		for (int i = 1; i < this->basicGraph->getVeretexCount(); i++) {
 			for (int j = 0; j < i; j++) {
-				if (this->basicGraph.getEgdeLength({ i, j }) != 0) {
+				if (this->basicGraph->getEgdeLength({ i, j }) != 0) {
 					if (this->included[edgeId]) {
-						includedEdges.push_back({ {i, j}, this->basicGraph.getEgdeLength({ i, j }) });
+						includedEdges.push_back({ {i, j}, this->basicGraph->getEgdeLength({ i, j }) });
 					}
 					edgeId++;
 				}
 			}
 		}
-		return Graph(this->basicGraph.getVertices(), includedEdges);
+		return Graph(this->basicGraph->getVertices(), includedEdges);
 	}
 
 	int Chromosome::getFitness() {
 		int edgeId = 0;
 		int fitness = 0;
-		for (int i = 1; i < this->basicGraph.getVeretexCount(); i++) {
+		for (int i = 1; i < this->basicGraph->getVeretexCount(); i++) {
 			for (int j = 0; j < i; j++) {
-				if (this->basicGraph.getEgdeLength({ i, j }) != 0) {
+				if (this->basicGraph->getEgdeLength({ i, j }) != 0) {
 					if (this->included[edgeId]) {
-						fitness += this->basicGraph.getEgdeLength({ i, j });
+						fitness += this->basicGraph->getEgdeLength({ i, j });
 					}
 					edgeId++;
 				}
 			}
 		}
-		fitness += (int)std::round(std::log(this->getGraph().getConnectedComponentsCount()) * this->basicGraph.getTotalEdgeLength());
+		if(this->basicGraph->getVeretexCount() - 1 < this->getEdgeCount()) {
+			fitness += (int)std::round(std::log(this->getEdgeCount() - (this->basicGraph->getVeretexCount() - 1) + 1) *
+				((double)this->basicGraph->getTotalEdgeLength() / (double)this->basicGraph->getEdgeCount()));
+		}
+		fitness += (int)std::round(std::log(this->getGraph().getConnectedComponentsCount()) * this->basicGraph->getTotalEdgeLength());
 		return fitness;
 	}
 }

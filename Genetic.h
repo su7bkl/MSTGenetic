@@ -8,7 +8,8 @@ namespace genetic {
 	class Chromosome {
 	private:
 		std::vector<bool> included;
-		Graph basicGraph;
+		Graph* basicGraph;
+		int getEdgeCount();
 	public:
 		Graph getGraph();
 		int getFitness();
