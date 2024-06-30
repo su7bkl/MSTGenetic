@@ -83,6 +83,13 @@ void EpochWindow::render()
 
     static int selectedChromosome = -1;
 
+    // кнопка "запустить/остановить"
+    if (ImGui::Button((const char*)u8"Запустить")) {
+        // пока ничего
+    }
+
+    ImGui::SameLine();
+
     // кнопка "до конца"
     if (ImGui::Button((const char*)u8"До конца")) {
         // пока ничего
@@ -100,13 +107,6 @@ void EpochWindow::render()
 
     // кнопка "эпоха назад"
     if (ImGui::Button((const char*)u8"Эпоха назад")) {
-        // пока ничего
-    }
-
-    ImGui::SameLine();
-
-    // кнопка "остановить"
-    if (ImGui::Button((const char*)u8"Остановить")) {
         // пока ничего
     }
 
