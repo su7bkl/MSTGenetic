@@ -7,8 +7,8 @@ namespace gui {
     {
         for (int i = 0; i < epoch.size(); i++) {
             epoch.at(i) = i + 1.0f;
-            best.at(i) = 700 / static_cast<float>(i) + std::rand() % 20 - 10;
-            avg.at(i) = 900 / static_cast<float>(i) + std::rand() % 20 - 10;
+            best.at(i) = 700 / static_cast<float>(i + 1) + std::rand() % 20 - 10;
+            avg.at(i) = 900 / static_cast<float>(i + 1) + std::rand() % 20 - 10;
         }
     }
 
@@ -34,6 +34,7 @@ namespace gui {
         // графики
         if (ImPlot::BeginPlot((const char*)u8"##", ImVec2(-FLT_MIN, -FLT_MIN))) {
             ImPlot::SetupAxes((const char*)u8"Эпоха", (const char*)u8"F");
+            ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 1, this->epoch.size());
 
             // график лучшего значения по поколениям
             ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle);
