@@ -1,8 +1,8 @@
 #pragma once
-#include "gui/WindowBase.h"
+#include "gui/BaseWindow.h"
 #include "dummy/Graph.h"
 
-class DataWindow : public  WindowBase
+class DataWindow : public BaseWindow
 {
 private:
     Graph& graph;

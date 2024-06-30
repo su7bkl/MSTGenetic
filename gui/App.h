@@ -27,5 +27,4 @@ public:
 
     bool isRunning();
     void stop();
-
 };

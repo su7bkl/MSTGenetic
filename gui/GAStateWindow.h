@@ -1,10 +1,11 @@
 #pragma once
-#include "gui/WindowBase.h"
+#include "gui/BaseWindow.h"
 #include <vector>
 
-class GAStateWindow : public WindowBase
+class GAStateWindow : public BaseWindow
 {
 private:
+    // будет убрано
     std::vector<float> epoch;
     std::vector<float> best;
     std::vector<float> avg;

@@ -48,7 +48,7 @@
     <ClCompile Include="gui\GASettingsWindow.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="gui\WindowBase.cpp">
+    <ClCompile Include="gui\BaseWindow.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="gui\EpochWindow.cpp">
@@ -73,6 +73,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="gui\GAStateWindow.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="libs\imguiFileDialog\ImGuiFileDialog.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -119,7 +122,7 @@
     <ClInclude Include="gui\GASettingsWindow.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="gui\WindowBase.h">
+    <ClInclude Include="gui\BaseWindow.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="gui\EpochWindow.h">
@@ -143,6 +146,15 @@
     <ClInclude Include="gui\GAStateWindow.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="libs\imguiFileDialog\ImGuiFileDialog.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imguiFileDialog\ImGuiFileDialogConfig.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="libs\imguiFileDialog\dirent\dirent.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="libs\glfw\lib-vc2022\glfw3.lib" />
@@ -152,5 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
+    <None Include=".gitignore" />
+    <None Include="README.md" />
   </ItemGroup>
 </Project>

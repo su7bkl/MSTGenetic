@@ -1,10 +1,9 @@
 #pragma once
-#include "gui/WindowBase.h"
+#include "gui/BaseWindow.h"
 
-class GASettingsWindow : public WindowBase
+class GASettingsWindow : public BaseWindow
 {
 public:
     GASettingsWindow();
-
     void render() override;
 };

@@ -1,23 +1,25 @@
 #pragma once
-#include "gui/WindowBase.h"
+#include "gui/BaseWindow.h"
 #include "dummy/Graph.h"
 #include "dummy/Chromosome.h"
 #include <vector>
 #include <imgui.h>
 
-class EpochWindow : public WindowBase
+class EpochWindow : public BaseWindow
 {
 private:
-    Graph& graph;
+    // будет убрано
+    void regenerateChromosomes();
     std::vector<Chromosome> chromosomes;
+    std::vector<std::pair<int, int>> edges;
+
+    Graph& graph;
+
     std::vector<int> chromosomesOrder;
     bool chromosomesSortingRequired;
-    std::vector<std::pair<int, int>> edges;
-    int selectedChromosome;
 
-    void regenerateChromosomes();
     void sortChromosomes(ImGuiTableSortSpecs* sortSpecs);
-    bool sortComparator(ImGuiTableSortSpecs* sortSpecs, const int& left, const int& right) const;
+    bool chromosomesComparator(ImGuiTableSortSpecs* sortSpecs, const int& left, const int& right) const;
 
 public:
     EpochWindow(Graph& graph);

@@ -79,6 +79,7 @@ int main(int, char**)
     ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
 
+    // инициализация приложения
     App application = App();
 
     // Setup Platform/Renderer backends
@@ -113,6 +114,7 @@ int main(int, char**)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        // рендер приложеия
         application.render();
 
         // Rendering
