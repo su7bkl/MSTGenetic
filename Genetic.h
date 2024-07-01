@@ -42,6 +42,7 @@ namespace genetic {
         static std::pair<Chromosome, Chromosome> breedUniform(Chromosome& a, Chromosome& b);
     public:
         Breeder(BreedingType type);
+        void setBreedingType(BreedingType newType);
         std::pair<Chromosome, Chromosome> breed(Chromosome& a, Chromosome& b);
     };
 }

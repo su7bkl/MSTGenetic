@@ -87,6 +87,10 @@ namespace genetic {
         this->type = type;
     }
 
+    void Breeder::setBreedingType(BreedingType newType) {
+        this->type = newType;
+    }
+
     std::pair<Chromosome, Chromosome> Breeder::breed(Chromosome& a, Chromosome& b) {
         if(a.getSize() != b.getSize()) {
             throw std::invalid_argument("Different chromosome sizes to breed");
