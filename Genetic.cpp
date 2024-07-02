@@ -1,4 +1,5 @@
 #include "Genetic.h"
+#include <iostream>
 
 namespace genetic {
     std::mt19937 Chromosome::rng((std::random_device())());
@@ -18,7 +19,7 @@ namespace genetic {
     }
 
     Chromosome::Chromosome(Graph* graph) {
-        int size = graph->getVeretexCount();
+        int size = graph->getEdgeCount();
         std::bernoulli_distribution dist(0.5);
         this->included.resize(size);
         for(int i = 0; i < size; i++) {
@@ -43,9 +44,9 @@ namespace genetic {
         std::vector<Edge> includedEdges;
         for(int i = 1; i < this->basicGraph->getVeretexCount(); i++) {
             for(int j = 0; j < i; j++) {
-                if(this->basicGraph->getEgdeLength({ i, j }) != 0) {
+                if(this->basicGraph->getEdgeLength({ i, j }) != 0) {
                     if(this->included[edgeId]) {
-                        includedEdges.push_back({ {i, j}, this->basicGraph->getEgdeLength({ i, j }) });
+                        includedEdges.push_back({ {i, j}, this->basicGraph->getEdgeLength({ i, j }) });
                     }
                     edgeId++;
                 }
@@ -61,23 +62,23 @@ namespace genetic {
 
     double Chromosome::getFitness() {
         int edgeId = 0;
-        int fitness = 0;
+        double fitness = 0;
         for(int i = 1; i < this->basicGraph->getVeretexCount(); i++) {
             for(int j = 0; j < i; j++) {
-                if(this->basicGraph->getEgdeLength({ i, j }) != 0) {
+                if(this->basicGraph->getEdgeLength({ i, j }) != 0) {
                     if(this->included[edgeId]) {
-                        fitness += this->basicGraph->getEgdeLength({ i, j });
+                        fitness += this->basicGraph->getEdgeLength({ i, j });
                     }
                     edgeId++;
                 }
             }
         }
         if(this->basicGraph->getVeretexCount() - 1 < this->getEdgeCount()) {
-            fitness += (int)std::round(std::log(this->getEdgeCount() - (this->basicGraph->getVeretexCount() - 1) + 1) *
-                ((double)this->basicGraph->getTotalEdgeLength() / (double)this->basicGraph->getEdgeCount()));
+            fitness += std::log(this->getEdgeCount() - (this->basicGraph->getVeretexCount() - 1) + 1) *
+                ((double)this->basicGraph->getTotalEdgeLength() / (double)this->basicGraph->getEdgeCount());
         }
-        fitness += 1.0 / (std::log(this->getGraph()->getConnectedComponentsCount()) * this->basicGraph->getTotalEdgeLength());
-        return fitness;
+        fitness += (std::log(this->getGraph()->getConnectedComponentsCount()) * this->basicGraph->getTotalEdgeLength());
+        return 1.0 / fitness;
     }
 
     std::vector<bool> Chromosome::getIncluded() {

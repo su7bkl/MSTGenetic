@@ -75,6 +75,10 @@ namespace genetic {
 
 	void Graph::addVertex(Vertex vertex) {
 		this->vertexCount++;
+		this->ajacencyMatrix.resize(vertexCount);
+		for(int i = 0; i < vertexCount; i++) {
+			this->ajacencyMatrix[i].resize(vertexCount);
+		}
 		this->vertices.push_back(vertex);
 	}
 
@@ -116,7 +120,7 @@ namespace genetic {
 	* Если указанные вершины отутствуют в графе
 	* бросает исключение out_of_range
 	*/
-	int Graph::getEgdeLength(Terminals terminals) {
+	int Graph::getEdgeLength(Terminals terminals) {
 		if (terminals.first < 0 || terminals.first >= this->vertexCount
 			|| terminals.second < 0 || terminals.second >= this->vertexCount) {
 			throw std::out_of_range("Vertex id out of range");
@@ -138,7 +142,7 @@ namespace genetic {
 	* Если указанные вершины отутствуют в графе
 	* бросает исключение out_of_range
 	*/
-	void Graph::changeEgdeLength(Terminals terminals, int newLength) {
+	void Graph::changeEdgeLength(Terminals terminals, int newLength) {
 		if (terminals.first < 0 || terminals.first >= this->vertexCount
 			|| terminals.second < 0 || terminals.second >= this->vertexCount) {
 			throw std::out_of_range("Vertex id out of range");
@@ -183,8 +187,8 @@ namespace genetic {
 				if (edgeId == this->vertexCount - 1) {
 					return result;
 				}
-				if (this->getEgdeLength({ i, j }) != 0) {
-					result += this->getEgdeLength({ i, j });
+				if (this->getEdgeLength({ i, j }) != 0) {
+					result += this->getEdgeLength({ i, j });
 					edgeId++;
 				}
 			}

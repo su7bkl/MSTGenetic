@@ -44,11 +44,11 @@ namespace genetic {
 		int getEdgeCount();
 		std::vector<Vertex> getVertices();
 		Vertex getVertex(int id);
-		int getEgdeLength(Terminals terminals);
+		int getEdgeLength(Terminals terminals);
 		int getTotalEdgeLength();
 		int getConnectedComponentsCount();
 		int getUpperMSTEstiamate();
-		void changeEgdeLength(Terminals terminals, int newLength);
+		void changeEdgeLength(Terminals terminals, int newLength);
 		void removeLastVertex();
 		bool isConnected();
 	};
