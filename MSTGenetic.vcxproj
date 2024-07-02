@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="debug2|Win32">
+      <Configuration>debug2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="debug2|x64">
+      <Configuration>debug2</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -51,6 +59,12 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='debug2|Win32'">
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='debug2|x64'">
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -147,6 +161,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Genetic.cpp" />
+    <ClCompile Include="Graph.cpp" />
     <ClCompile Include="dummy\Chromosome.cpp" />
     <ClCompile Include="dummy\Graph.cpp" />
     <ClCompile Include="gui\GAStateWindow.cpp" />
@@ -170,6 +186,8 @@
     <ClCompile Include="dummy\Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Genetic.h" />
+    <ClInclude Include="Graph.h" />
     <ClInclude Include="dummy\Chromosome.h" />
     <ClInclude Include="dummy\Graph.h" />
     <ClInclude Include="gui\GAStateWindow.h" />
