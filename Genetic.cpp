@@ -3,6 +3,7 @@
 namespace genetic {
     std::mt19937 Chromosome::rng((std::random_device())());
     std::mt19937 Breeder::rng((std::random_device())());
+    std::mt19937 Generation::rng((std::random_device())());
 
     int Chromosome::getEdgeCount() {
         int res = 0;
@@ -16,9 +17,14 @@ namespace genetic {
         return this->included.size();
     }
 
-    Chromosome::Chromosome(Graph& graph) {
-        this->included.resize(graph.getVeretexCount());
-        this->basicGraph = &graph;
+    Chromosome::Chromosome(Graph* graph) {
+        int size = graph->getVeretexCount();
+        std::bernoulli_distribution dist(0.5);
+        this->included.resize(size);
+        for(int i = 0; i < size; i++) {
+            this->included[i] = dist(this->rng);
+        }
+        this->basicGraph = graph;
     }
 
     Chromosome::Chromosome(Graph* graph, std::vector<bool>& selected) {
@@ -29,7 +35,10 @@ namespace genetic {
         this->basicGraph = graph;
     }
 
-    Graph Chromosome::getGraph() {
+    Graph* Chromosome::getGraph() {
+        if(this->correspondingGraph.getVeretexCount() != 0) {
+            return &this->correspondingGraph;
+        }
         int edgeId = 0;
         std::vector<Edge> includedEdges;
         for(int i = 1; i < this->basicGraph->getVeretexCount(); i++) {
@@ -42,14 +51,15 @@ namespace genetic {
                 }
             }
         }
-        return Graph(this->basicGraph->getVertices(), includedEdges);
+        this->correspondingGraph = Graph(this->basicGraph->getVertices(), includedEdges);
+        return &this->correspondingGraph;
     }
 
     Graph* Chromosome::getBasicGraph() {
         return this->basicGraph;
     }
 
-    int Chromosome::getFitness() {
+    double Chromosome::getFitness() {
         int edgeId = 0;
         int fitness = 0;
         for(int i = 1; i < this->basicGraph->getVeretexCount(); i++) {
@@ -66,7 +76,7 @@ namespace genetic {
             fitness += (int)std::round(std::log(this->getEdgeCount() - (this->basicGraph->getVeretexCount() - 1) + 1) *
                 ((double)this->basicGraph->getTotalEdgeLength() / (double)this->basicGraph->getEdgeCount()));
         }
-        fitness += (int)std::round(std::log(this->getGraph().getConnectedComponentsCount()) * this->basicGraph->getTotalEdgeLength());
+        fitness += 1.0 / (std::log(this->getGraph()->getConnectedComponentsCount()) * this->basicGraph->getTotalEdgeLength());
         return fitness;
     }
 
@@ -81,6 +91,10 @@ namespace genetic {
             newIncluded[dist(this->rng)] = !newIncluded[i];
         }
         return Chromosome(this->basicGraph, newIncluded);
+    }
+
+    Breeder::Breeder() {
+        this->type = SinglePoint;
     }
 
     Breeder::Breeder(BreedingType type) {
@@ -177,5 +191,84 @@ namespace genetic {
         Chromosome child1(a.getBasicGraph(), child1Included);
         Chromosome child2(a.getBasicGraph(), child2Included);
         return { child1, child2 };
+    }
+
+    Generation::Generation(int size, Graph* basicGraph, SelectionType selType, BreedingType breedType) {
+        this->selType = selType;
+        this->breeder.setBreedingType(breedType);
+        this->size = size;
+        this->fitnesses.resize(size);
+        this->basicGraph = basicGraph;
+        for(int i = 0; i < size; i++) {
+            this->entities.push_back(Chromosome(basicGraph));
+        }
+        this->computeFitnesses();
+    }
+
+    Generation::Generation(Generation& prev, double breedProb, double mutationProb) {
+        this->size = prev.size;
+        this->selType = prev.selType;
+        this->basicGraph = prev.basicGraph;
+        this->breeder = prev.breeder;
+        this->entities = prev.entities;
+        this->fitnesses = prev.fitnesses;
+        switch(this->selType) {
+        case Roulette:
+            breedSelectRoulette(breedProb, mutationProb);
+            break;
+        default:
+            break;
+        }
+        this->computeFitnesses();
+    }
+
+    void Generation::breedSelectRoulette(double breedProb, double mutationProb) {
+        std::vector<Chromosome> selected;
+        std::uniform_real_distribution<double> roulette(0, this->fitnesses[this->size - 1]);
+        for(int i = 0; i < this->size; i++) {
+            int pos = std::lower_bound(this->fitnesses.begin(), this->fitnesses.end(), roulette(this->rng)) - this->fitnesses.begin();
+            selected.push_back(this->entities[pos]);
+        }
+        std::bernoulli_distribution breed(breedProb);
+        std::bernoulli_distribution mutation(mutationProb);
+        for(int i = 0; i < this->size / 2; i++) {
+            if(breed(this->rng)) {
+                std::pair<Chromosome, Chromosome> breedingResult = this->breeder.breed(selected[i], selected[i + 1]);
+                if(mutation(this->rng)) {
+                    selected[i] = breedingResult.first.mutate();
+                }
+                else {
+                    selected[i] = breedingResult.first;
+                }
+                if(mutation(this->rng)) {
+                    selected[i + 1] = breedingResult.second.mutate();
+                }
+                else {
+                    selected[i + 1] = breedingResult.second;
+                }
+            }
+        }
+        this->entities = selected;
+    }
+
+    int Generation::getSize() {
+        return this->size;
+    }
+
+    void Generation::computeFitnesses() {
+        this->fitnesses[0] = this->entities[0].getFitness();
+        for(int i = 1; i < size; i++) {
+            this->fitnesses[i] = this->fitnesses[i - 1] + this->entities[i].getFitness();
+        }
+    }
+
+    std::pair<Chromosome*, int> Generation::getEntity(int id) {
+        if(id < 0 || id >= this->size) {
+            throw std::invalid_argument("ID is bigger than generation size or negative");
+        }
+        if(id == 0)
+            return { &this->entities[id], this->fitnesses[id] };
+        else
+            return { &this->entities[id], this->fitnesses[id] - this->fitnesses[id - 1] };
     }
 }
