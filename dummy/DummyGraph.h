@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "Vertex.h"
+#include "dummy/Vertex.h"
 
 class Graph
 {

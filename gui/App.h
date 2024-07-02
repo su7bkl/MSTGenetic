@@ -3,7 +3,8 @@
 #include "gui/GASettingsWindow.h"
 #include "gui/EpochWindow.h"
 #include "gui/GAStateWindow.h"
-#include "dummy/Graph.h"
+#include "Graph.h"
+#include "dummy/GeneticAlgorithm.h"
 
 namespace gui {
     class App
@@ -12,7 +13,8 @@ namespace gui {
         bool disposed = false;
         bool running;
 
-        Graph graph;
+        genetic::Graph graph;
+        GeneticAlgorithm geneticAlgorithm;
 
         DataWindow dataWindow;
         GASettingsWindow gaSettingWindow;

@@ -1,5 +1,5 @@
 #pragma once
-#include "dummy/Graph.h"
+#include "dummy/DummyGraph.h"
 #include <vector>
 
 class Chromosome

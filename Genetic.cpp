@@ -138,7 +138,7 @@ namespace genetic {
             a.getIncluded().begin() + cutPoint,
             child1Included.begin());
         copy(b.getIncluded().begin() + cutPoint,
-            a.getIncluded().end(),
+            b.getIncluded().end(),
             child1Included.begin() + cutPoint);
         copy(b.getIncluded().begin(),
             b.getIncluded().begin() + cutPoint,
@@ -263,7 +263,7 @@ namespace genetic {
         }
     }
 
-    std::pair<Chromosome*, int> Generation::getEntity(int id) {
+    std::pair<Chromosome*, double> Generation::getEntity(int id) {
         if(id < 0 || id >= this->size) {
             throw std::invalid_argument("ID is bigger than generation size or negative");
         }

@@ -1,15 +1,20 @@
 #pragma once
 #include "gui/BaseWindow.h"
-#include "dummy/Graph.h"
+#include "Graph.h"
+#include "dummy/GeneticAlgorithm.h"
 
 namespace gui {
     class DataWindow : public BaseWindow
     {
     private:
-        Graph& graph;
+        genetic::Graph& graph;
+        GeneticAlgorithm& geneticAlgorithm;
+
+        void ensureVertexCount(int vertexCount);
+        void ensureEdge(int vertex1, int vertex2, int length);
 
     public:
-        DataWindow(Graph& graph);
+        DataWindow(genetic::Graph& graph, GeneticAlgorithm& geneticAlgorithm);
         void render() override;
     };
 }

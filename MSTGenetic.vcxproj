@@ -162,9 +162,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Genetic.cpp" />
+    <ClCompile Include="dummy\GeneticAlgorithm.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="dummy\Chromosome.cpp" />
-    <ClCompile Include="dummy\Graph.cpp" />
+    <ClCompile Include="dummy\DummyGraph.cpp" />
     <ClCompile Include="gui\GAStateWindow.cpp" />
     <ClCompile Include="gui\EpochWindow.cpp" />
     <ClCompile Include="gui\GASettingsWindow.cpp" />
@@ -187,9 +188,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Genetic.h" />
+    <ClInclude Include="dummy\GeneticAlgorithm.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="dummy\Chromosome.h" />
-    <ClInclude Include="dummy\Graph.h" />
+    <ClInclude Include="dummy\DummyGraph.h" />
     <ClInclude Include="gui\GAStateWindow.h" />
     <ClInclude Include="gui\EpochWindow.h" />
     <ClInclude Include="gui\GASettingsWindow.h" />

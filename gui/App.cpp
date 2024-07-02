@@ -3,9 +3,13 @@
 #include <implot.h>
 
 namespace gui {
-    App::App() : running(true), graph(2), dataWindow(graph), gaSettingWindow(), epochWindow(graph), gaStateWindow()
+    App::App() : running(true), graph(), geneticAlgorithm(this->graph), dataWindow(this->graph, this->geneticAlgorithm), gaSettingWindow(this->geneticAlgorithm), epochWindow(this->graph, this->geneticAlgorithm), gaStateWindow()
     {
-        // истановка флагов imgui
+        // минимум две вершины
+        this->graph.addVertex(genetic::Vertex());
+        this->graph.addVertex(genetic::Vertex());
+
+        // установка флагов imgui
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;

@@ -68,7 +68,7 @@ namespace genetic {
     public:
         Generation(int size, Graph* basicGraph, SelectionType selType, BreedingType breedType);
         Generation(Generation& prev, double breedProb, double mutationProb);
-        std::pair<Chromosome*, int> getEntity(int id);
+        std::pair<Chromosome*, double> getEntity(int id);
         int getSize();
     };
 }

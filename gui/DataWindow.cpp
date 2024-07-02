@@ -6,25 +6,57 @@
 #include <string>
 
 namespace gui {
-    DataWindow::DataWindow(Graph& graph) : graph(graph) {}
+    void DataWindow::ensureVertexCount(int vertexCount)
+    {
+        int difference = vertexCount - this->graph.getVeretexCount();
+
+        if (difference == 0)
+            return;
+
+        if (difference > 0) {
+            for (int i = 0; i < difference; i++)
+                this->graph.addVertex(genetic::Vertex());
+        }
+        else {
+            for (int i = 0; i < -difference; i++)
+                this->graph.removeLastVertex();
+        }
+    }
+
+    void DataWindow::ensureEdge(int vertex1, int vertex2, int length)
+    {
+        if (this->graph.getEdgeLength({ vertex1, vertex2 }) == length)
+            return;
+
+        if (this->graph.getEdgeLength({ vertex1, vertex2 }) == 0)
+            this->graph.addEdge({ { vertex1, vertex2 }, length });
+        else
+            this->graph.changeEdgeLength({ vertex1, vertex2 }, length);
+    }
+
+    DataWindow::DataWindow(genetic::Graph& graph, GeneticAlgorithm& geneticAlgorithm) : graph(graph), geneticAlgorithm(geneticAlgorithm) {}
 
     void DataWindow::render()
     {
         // окно
         if (ImGui::Begin((const char*)u8"Данные")) {
 
+            // если алгоритм запущен, то предотвратить ввод
+            if (this->geneticAlgorithm.isStarted())
+                ImGui::BeginDisabled();
+
             // ввод числа вершин
-            int verticesCount = this->graph.getVerticesCount();
+            int verticesCount = this->graph.getVeretexCount();
             ImGui::InputInt((const char*)u8"Число вершин", &verticesCount, 1, 10);
             verticesCount = std::clamp(verticesCount, 2, 500);
-            this->graph.setVerticesCount(verticesCount);
+            this->ensureVertexCount(verticesCount);
 
             // кнопка импорта из файла
             if (ImGui::Button((const char*)u8"Импорт из файла")) {
                 IGFD::FileDialogConfig config;
                 config.path = ".";
                 config.flags = ImGuiFileDialogFlags_Modal;
-                ImGuiFileDialog::Instance()->OpenDialog("##importFileDialog", (const char*)u8"Выберите файл матрицы", ".*", config);
+                ImGuiFileDialog::Instance()->OpenDialog("##importFileDialog", (const char*)u8"Выберите файл матрицы (НЕ РАБОТАЕТ)", ".*", config);
             }
 
             ImGui::SameLine();
@@ -40,8 +72,7 @@ namespace gui {
             constexpr ImGuiTableFlags ADJACENCY_TABLE_FLAGS = ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Resizable;
             constexpr ImGuiTableColumnFlags ADJACENCY_COLUMN_FLAGS = ImGuiTableColumnFlags_WidthFixed;
 
-            verticesCount = this->graph.getVerticesCount();
-            auto& adjacencyMatrix = this->graph.getAdjacencyMatrix();
+            verticesCount = this->graph.getVeretexCount();
 
             if (ImGui::BeginTable("##adjacency_matrix_table", verticesCount + 1, ADJACENCY_TABLE_FLAGS, ImVec2(0, 350))) {
                 ImGui::TableSetupColumn("##", ADJACENCY_COLUMN_FLAGS);
@@ -61,14 +92,12 @@ namespace gui {
                             ImGui::SetNextItemWidth(-FLT_MIN);
 
                             if (row == column)
-                                ImGui::Text("%d", adjacencyMatrix.at(row).at(column));
-                            else if (row < column) {
-                                ImGui::InputInt("##", &adjacencyMatrix.at(row).at(column), 0);
-                                adjacencyMatrix.at(row).at(column) = std::max(adjacencyMatrix.at(row).at(column), 0);
-                            }
+                                ImGui::Text("%d", this->graph.getEdgeLength({ row, column }));
                             else {
-                                ImGui::InputInt("##", &adjacencyMatrix.at(column).at(row), 0);
-                                adjacencyMatrix.at(column).at(row) = std::max(adjacencyMatrix.at(column).at(row), 0);
+                                int edgeLength = this->graph.getEdgeLength({ row, column });
+                                ImGui::InputInt("##", &edgeLength, 0);
+                                edgeLength = std::max(edgeLength, 0);
+                                this->ensureEdge(row, column, edgeLength);
                             }
 
                             ImGui::PopID();
@@ -78,6 +107,9 @@ namespace gui {
                 }
                 ImGui::EndTable();
             }
+
+            if (this->geneticAlgorithm.isStarted())
+                ImGui::EndDisabled();
 
             ImGui::SeparatorText((const char*)u8"Визуальное представление [?]");
             ImGui::SetItemTooltip((const char*)u8"Вершины графа можно перетаскивать");
@@ -102,22 +134,22 @@ namespace gui {
                 // отрисовка рёбер
                 for (int startVertexIndex = 0; startVertexIndex < verticesCount; startVertexIndex++) {
                     for (int endVertexIndex = startVertexIndex + 1; endVertexIndex < verticesCount; endVertexIndex++) {
-                        if (adjacencyMatrix.at(startVertexIndex).at(endVertexIndex) == 0)
+                        if (this->graph.getEdgeLength({ startVertexIndex, endVertexIndex }) == 0)
                             continue;
 
-                        Vertex startVertex = this->graph.getVertices().at(startVertexIndex);
-                        Vertex endVertex = this->graph.getVertices().at(endVertexIndex);
+                        genetic::Vertex startVertex = this->graph.getVertex(startVertexIndex);
+                        genetic::Vertex endVertex = this->graph.getVertex(endVertexIndex);
 
-                        drawList->AddLine(ImVec2(startVertex.x + drawOrigin.x, startVertex.y + drawOrigin.y), ImVec2(endVertex.x + drawOrigin.x, endVertex.y + drawOrigin.y), EDGE_COLOR, EDGE_THICKNESS);
+                        drawList->AddLine(ImVec2(startVertex.getX() + drawOrigin.x, startVertex.getY() + drawOrigin.y), ImVec2(endVertex.getX() + drawOrigin.x, endVertex.getY() + drawOrigin.y), EDGE_COLOR, EDGE_THICKNESS);
                     }
                 }
 
                 // отрисовка вершин
                 for (int vertexIndex = 0; vertexIndex < verticesCount; vertexIndex++) {
-                    Vertex currentVertex = this->graph.getVertices().at(vertexIndex);
+                    genetic::Vertex currentVertex = this->graph.getVertex(vertexIndex);
 
-                    drawList->AddCircleFilled(ImVec2(currentVertex.x + drawOrigin.x, currentVertex.y + drawOrigin.y), VERTEX_SIZE, VERTEX_COLOR);
-                    drawList->AddText(ImVec2(currentVertex.x - VERTEX_SIZE + VERTEX_LABEL_OFFSET.x + drawOrigin.x, currentVertex.y - VERTEX_SIZE + VERTEX_LABEL_OFFSET.y + drawOrigin.y), VERTEX_LABEL_COLOR, std::to_string(vertexIndex).c_str());
+                    drawList->AddCircleFilled(ImVec2(currentVertex.getX() + drawOrigin.x, currentVertex.getY() + drawOrigin.y), VERTEX_SIZE, VERTEX_COLOR);
+                    drawList->AddText(ImVec2(currentVertex.getX() - VERTEX_SIZE + VERTEX_LABEL_OFFSET.x + drawOrigin.x, currentVertex.getY() - VERTEX_SIZE + VERTEX_LABEL_OFFSET.y + drawOrigin.y), VERTEX_LABEL_COLOR, std::to_string(vertexIndex).c_str());
                 }
 
                 ImGuiIO& io = ImGui::GetIO();
@@ -126,9 +158,9 @@ namespace gui {
                 // захват мыши для перетаскивания
                 if (io.MouseClicked[ImGuiMouseButton_Left] && draggingVertexIndex == -1) {
                     for (int vertexIndex = 0; vertexIndex < verticesCount; vertexIndex++) {
-                        Vertex currentVertex = this->graph.getVertices().at(vertexIndex);
-                        float deltaX = drawOrigin.x + currentVertex.x - io.MousePos.x;
-                        float deltaY = drawOrigin.y + currentVertex.y - io.MousePos.y;
+                        genetic::Vertex currentVertex = this->graph.getVertices().at(vertexIndex);
+                        float deltaX = drawOrigin.x + currentVertex.getX() - io.MousePos.x;
+                        float deltaY = drawOrigin.y + currentVertex.getY() - io.MousePos.y;
 
                         if (deltaX * deltaX + deltaY * deltaY < VERTEX_SIZE * VERTEX_SIZE) {
                             draggingVertexIndex = vertexIndex;
@@ -139,8 +171,7 @@ namespace gui {
 
                 // перетаскивание
                 if (draggingVertexIndex != -1) {
-                    this->graph.getVertices().at(draggingVertexIndex).x = io.MousePos.x - drawOrigin.x;
-                    this->graph.getVertices().at(draggingVertexIndex).y = io.MousePos.y - drawOrigin.y;
+                    this->graph.changeVertexCoords(draggingVertexIndex, { io.MousePos.x - drawOrigin.x, io.MousePos.y - drawOrigin.y });
 
                     if (!io.MouseDown[ImGuiMouseButton_Left])
                         draggingVertexIndex = -1;
@@ -158,6 +189,7 @@ namespace gui {
             if (ImGuiFileDialog::Instance()->IsOk()) {
                 std::string filename = ImGuiFileDialog::Instance()->GetFilePathName();
                 std::string filepath = ImGuiFileDialog::Instance()->GetCurrentPath();
+                // пока ничего не происходит
             }
 
             ImGuiFileDialog::Instance()->Close();

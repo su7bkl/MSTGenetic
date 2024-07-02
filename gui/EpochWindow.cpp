@@ -2,40 +2,16 @@
 #include <imgui.h>
 #include <algorithm>
 #include <functional>
+#include <vector>
 #include <string>
 #include <format>
 
 namespace gui {
-    EpochWindow::EpochWindow(Graph& graph) : graph(graph), chromosomesSortingRequired(false)
+    EpochWindow::EpochWindow(genetic::Graph& graph, GeneticAlgorithm& geneticAlgorithm) :
+        graph(graph),
+        geneticAlgorithm(geneticAlgorithm),
+        chromosomesSortingRequired(false)
     {
-        for (int i = 0; i < 20; i++) {
-            this->chromosomes.push_back(Chromosome(this->graph));
-            this->chromosomesOrder.push_back(i);
-        }
-
-        for (int startVertexIndex = 0; startVertexIndex < this->graph.getVerticesCount(); startVertexIndex++)
-            for (int endVertexIndex = startVertexIndex + 1; endVertexIndex < this->graph.getVerticesCount(); endVertexIndex++)
-                if (this->graph.getEdge(startVertexIndex, endVertexIndex) != 0)
-                    this->edges.push_back(std::make_pair(startVertexIndex, endVertexIndex));
-    }
-
-    void EpochWindow::regenerateChromosomes()
-    {
-        this->chromosomes.clear();
-        this->chromosomesOrder.clear();
-
-        for (int i = 0; i < 20; i++) {
-            this->chromosomes.push_back(Chromosome(this->graph));
-            this->chromosomesOrder.push_back(i);
-        }
-
-        this->edges.clear();
-        for (int startVertexIndex = 0; startVertexIndex < this->graph.getVerticesCount(); startVertexIndex++)
-            for (int endVertexIndex = startVertexIndex + 1; endVertexIndex < this->graph.getVerticesCount(); endVertexIndex++)
-                if (this->graph.getEdge(startVertexIndex, endVertexIndex) != 0)
-                    this->edges.push_back(std::make_pair(startVertexIndex, endVertexIndex));
-
-        this->chromosomesSortingRequired = true;
     }
 
     void EpochWindow::sortChromosomes(ImGuiTableSortSpecs* sortSpecs)
@@ -55,6 +31,7 @@ namespace gui {
     bool EpochWindow::chromosomesComparator(ImGuiTableSortSpecs* sortSpecs, const int& left, const int& right) const
     {
         bool comparisionResult = false;
+        bool equalResult = false;
 
         constexpr int COLUMN_ID = 0;
         constexpr int COLUMN_FUNCTION_VALUE = 1;
@@ -63,14 +40,16 @@ namespace gui {
         switch (sortSpecs->Specs[0].ColumnIndex) {
         case COLUMN_ID:
             comparisionResult = left < right;
+            equalResult = left == right;
             break;
         case COLUMN_FUNCTION_VALUE:
-            comparisionResult = this->chromosomes[left].getTargetFunctionValue() < this->chromosomes[right].getTargetFunctionValue();
+            comparisionResult = this->geneticAlgorithm.getCurrentGeneration().getEntity(left).second < this->geneticAlgorithm.getCurrentGeneration().getEntity(right).second;
+            equalResult = this->geneticAlgorithm.getCurrentGeneration().getEntity(left).second == this->geneticAlgorithm.getCurrentGeneration().getEntity(right).second;
             break;
         }
 
         // инвертирование результата для сортировки по убыванию
-        if (sortSpecs->Specs[0].SortDirection == ImGuiSortDirection_Descending)
+        if (sortSpecs->Specs[0].SortDirection == ImGuiSortDirection_Descending && !equalResult)
             comparisionResult = !comparisionResult;
 
         return comparisionResult;
@@ -84,10 +63,34 @@ namespace gui {
 
         static int selectedChromosome = -1;
 
+        // ПЕРЕДЕЛАТЬ
+        static std::vector<genetic::Terminals> graphEdges;
+
         // кнопка "запустить/остановить"
-        if (ImGui::Button((const char*)u8"Запустить")) {
-            // пока ничего
+        if (!this->geneticAlgorithm.isStarted() && ImGui::Button((const char*)u8"Запустить")) {
+            this->geneticAlgorithm.start();
+            selectedChromosome = -1;
+            this->chromosomesSortingRequired = true;
+
+            this->chromosomesOrder.resize(this->geneticAlgorithm.getGenerationSize());
+            for (int i = 0; i < this->geneticAlgorithm.getGenerationSize(); i++)
+                this->chromosomesOrder.at(i) = i;
+
+            graphEdges.clear();
+            for (int startVertexIndex = 0; startVertexIndex < this->graph.getVeretexCount(); startVertexIndex++) {
+                for (int endVertexIndex = startVertexIndex + 1; endVertexIndex < this->graph.getVeretexCount(); endVertexIndex++) {
+                    if (this->graph.getEdgeLength({ startVertexIndex, endVertexIndex }) == 0)
+                        continue;
+                    graphEdges.push_back({ startVertexIndex, endVertexIndex });
+                }
+            }
         }
+        else if (this->geneticAlgorithm.isStarted() && ImGui::Button((const char*)u8"Остановить")) {
+            this->geneticAlgorithm.stop();
+        }
+
+        if (!this->geneticAlgorithm.isStarted())
+            return ImGui::End();
 
         ImGui::SameLine();
 
@@ -100,8 +103,9 @@ namespace gui {
 
         // кнопка "эпоха вперёд"
         if (ImGui::Button((const char*)u8"Эпоха вперёд")) {
+            this->geneticAlgorithm.step();
             selectedChromosome = -1;
-            this->regenerateChromosomes();
+            this->chromosomesSortingRequired = true;
         }
 
         ImGui::SameLine();
@@ -132,7 +136,7 @@ namespace gui {
                     selectedChromosome = row == selectedChromosome ? -1 : row;
 
                 ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%.3f", this->chromosomes.at(row).getTargetFunctionValue());
+                ImGui::Text("%.6f", this->geneticAlgorithm.getCurrentGeneration().getEntity(row).second);
             }
             ImGui::EndTable();
         }
@@ -149,9 +153,9 @@ namespace gui {
         constexpr ImGuiTableFlags GENOME_TABLE_FLAGS = ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollX | ImGuiTableFlags_SizingFixedFit;
         constexpr ImGuiTableColumnFlags GENOME_COLUMN_FLAGS = ImGuiTableColumnFlags_None;
 
-        if (ImGui::BeginTable("##genome_table", this->edges.size() + 1, GENOME_TABLE_FLAGS, ImVec2(0, 50))) {
+        if (ImGui::BeginTable("##genome_table", graphEdges.size() + 1, GENOME_TABLE_FLAGS, ImVec2(0, 50))) {
             ImGui::TableSetupColumn((const char*)u8"Ребро", GENOME_COLUMN_FLAGS);
-            for (const auto& edge : this->edges)
+            for (const auto& edge : graphEdges)
                 ImGui::TableSetupColumn(std::format("{},{}", edge.first, edge.second).c_str(), GENOME_COLUMN_FLAGS);
 
             ImGui::TableSetupScrollFreeze(1, 0);
@@ -162,9 +166,9 @@ namespace gui {
             ImGui::TableSetColumnIndex(0);
             ImGui::Text((const char*)u8"Включено");
 
-            for (int edgeIndex = 0; edgeIndex < this->edges.size(); edgeIndex++) {
+            for (int edgeIndex = 0; edgeIndex < graphEdges.size(); edgeIndex++) {
                 ImGui::TableSetColumnIndex(edgeIndex + 1);
-                ImGui::Text(this->chromosomes.at(selectedChromosome).getGenome().at(edgeIndex) ? "1" : "0");
+                ImGui::Text(this->geneticAlgorithm.getCurrentGeneration().getEntity(selectedChromosome).first->getIncluded().at(edgeIndex) ? "1" : "0");
             }
 
             ImGui::EndTable();
@@ -177,7 +181,7 @@ namespace gui {
         ImGui::Text((const char*)u8"Связность графа:");
         ImGui::SameLine();
         ImGui::BeginDisabled();
-        bool isConnected = this->chromosomes.at(selectedChromosome).getIsConnected();
+        bool isConnected = this->geneticAlgorithm.getCurrentGeneration().getEntity(selectedChromosome).first->getGraph()->isConnected();
         ImGui::Checkbox("##", &isConnected);
         ImGui::EndDisabled();
 
@@ -202,20 +206,21 @@ namespace gui {
             constexpr float VERTEX_SIZE = 10;
 
             // отрисовка рёбер
-            for (int edgeIndex = 0; edgeIndex < this->edges.size(); edgeIndex++) {
-                Vertex startVertex = this->graph.getVertices().at(this->edges.at(edgeIndex).first);
-                Vertex endVertex = this->graph.getVertices().at(this->edges.at(edgeIndex).second);
-                bool isEdgeIncluded = this->chromosomes.at(selectedChromosome).getGenome().at(edgeIndex);
+            for (int edgeIndex = 0; edgeIndex < graphEdges.size(); edgeIndex++) {
+                genetic::Vertex startVertex = this->graph.getVertex(graphEdges.at(edgeIndex).first);
+                genetic::Vertex endVertex = this->graph.getVertex(graphEdges.at(edgeIndex).second);
 
-                drawList->AddLine(ImVec2(startVertex.x + drawOrigin.x, startVertex.y + drawOrigin.y), ImVec2(endVertex.x + drawOrigin.x, endVertex.y + drawOrigin.y), isEdgeIncluded ? EDGE_INCLUDED_COLOR : EDGE_COLOR, EDGE_THICKNESS);
+                bool isEdgeIncluded = this->geneticAlgorithm.getCurrentGeneration().getEntity(selectedChromosome).first->getIncluded().at(edgeIndex);
+
+                drawList->AddLine(ImVec2(startVertex.getX() + drawOrigin.x, startVertex.getY() + drawOrigin.y), ImVec2(endVertex.getX() + drawOrigin.x, endVertex.getY() + drawOrigin.y), isEdgeIncluded ? EDGE_INCLUDED_COLOR : EDGE_COLOR, EDGE_THICKNESS);
             }
 
             // отрисовка вершин
-            for (int vertexIndex = 0; vertexIndex < this->graph.getVerticesCount(); vertexIndex++) {
-                Vertex currentVertex = this->graph.getVertices().at(vertexIndex);
+            for (int vertexIndex = 0; vertexIndex < this->graph.getVeretexCount(); vertexIndex++) {
+                genetic::Vertex currentVertex = this->graph.getVertex(vertexIndex);
 
-                drawList->AddCircleFilled(ImVec2(currentVertex.x + drawOrigin.x, currentVertex.y + drawOrigin.y), VERTEX_SIZE, VERTEX_COLOR);
-                drawList->AddText(ImVec2(currentVertex.x - VERTEX_SIZE + VERTEX_LABEL_OFFSET.x + drawOrigin.x, currentVertex.y - VERTEX_SIZE + VERTEX_LABEL_OFFSET.y + drawOrigin.y), VERTEX_LABEL_COLOR, std::to_string(vertexIndex).c_str());
+                drawList->AddCircleFilled(ImVec2(currentVertex.getX() + drawOrigin.x, currentVertex.getY() + drawOrigin.y), VERTEX_SIZE, VERTEX_COLOR);
+                drawList->AddText(ImVec2(currentVertex.getX() - VERTEX_SIZE + VERTEX_LABEL_OFFSET.x + drawOrigin.x, currentVertex.getY() - VERTEX_SIZE + VERTEX_LABEL_OFFSET.y + drawOrigin.y), VERTEX_LABEL_COLOR, std::to_string(vertexIndex).c_str());
             }
 
             // заглушка для размера

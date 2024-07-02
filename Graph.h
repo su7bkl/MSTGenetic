@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <vector>
 #include <unordered_set>
 #include <stack>
@@ -44,6 +44,7 @@ namespace genetic {
 		int getEdgeCount();
 		std::vector<Vertex> getVertices();
 		Vertex getVertex(int id);
+        void changeVertexCoords(int id, Coords newPos);
 		int getEdgeLength(Terminals terminals);
 		int getTotalEdgeLength();
 		int getConnectedComponentsCount();

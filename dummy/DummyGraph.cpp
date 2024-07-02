@@ -1,4 +1,4 @@
-#include "Graph.h"
+#include "dummy/DummyGraph.h"
 #include <algorithm>
 
 Graph::Graph(int vertices) : vertices(vertices, Vertex()), adjacencyMatrix(vertices, std::vector(vertices, 0))
