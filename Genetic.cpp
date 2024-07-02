@@ -134,18 +134,14 @@ namespace genetic {
         std::uniform_int_distribution<int> dist(1, size - 1);
         int cutPoint = dist(Breeder::rng);
         std::vector<bool> child1Included(size), child2Included(size);
-        copy(a.getIncluded().begin(),
-            a.getIncluded().begin() + cutPoint,
-            child1Included.begin());
-        copy(b.getIncluded().begin() + cutPoint,
-            b.getIncluded().end(),
-            child1Included.begin() + cutPoint);
-        copy(b.getIncluded().begin(),
-            b.getIncluded().begin() + cutPoint,
-            child2Included.begin());
-        copy(a.getIncluded().begin() + cutPoint,
-            a.getIncluded().end(),
-            child2Included.begin() + cutPoint);
+        for(int i = 0; i < cutPoint; i++) {
+            child1Included[i] = a.getIncluded()[i];
+            child2Included[i] = b.getIncluded()[i];
+        }
+        for(int i = cutPoint; i < size; i++) {
+            child1Included[i] = b.getIncluded()[i];
+            child2Included[i] = a.getIncluded()[i];
+        }
         Chromosome child1(a.getBasicGraph(), child1Included);
         Chromosome child2(a.getBasicGraph(), child2Included);
         return { child1, child2 };
@@ -163,12 +159,10 @@ namespace genetic {
         int cutPoint2 = dist2(Breeder::rng);
         std::vector<bool> child1Included = a.getIncluded();
         std::vector<bool> child2Included = b.getIncluded();
-        copy(b.getIncluded().begin() + cutPoint1,
-            b.getIncluded().begin() + cutPoint2,
-            child1Included.begin() + cutPoint1);
-        copy(a.getIncluded().begin() + cutPoint1,
-            a.getIncluded().begin() + cutPoint2,
-            child2Included.begin() + cutPoint1);
+        for(int i = cutPoint1; i < cutPoint2; i++) {
+            child1Included[i] = b.getIncluded()[i];
+            child2Included[i] = a.getIncluded()[i];
+        }
         Chromosome child1(a.getBasicGraph(), child1Included);
         Chromosome child2(a.getBasicGraph(), child2Included);
         return { child1, child2 };
