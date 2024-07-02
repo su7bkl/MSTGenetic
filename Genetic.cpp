@@ -138,7 +138,7 @@ namespace genetic {
             a.getIncluded().begin() + cutPoint,
             child1Included.begin());
         copy(b.getIncluded().begin() + cutPoint,
-            a.getIncluded().end(),
+            b.getIncluded().end(),
             child1Included.begin() + cutPoint);
         copy(b.getIncluded().begin(),
             b.getIncluded().begin() + cutPoint,
