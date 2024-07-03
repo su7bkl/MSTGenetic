@@ -39,15 +39,6 @@
     <ClCompile Include="gui\EpochWindow.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="dummy\DummyGraph.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="dummy\Vertex.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="dummy\Chromosome.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="libs\implot\implot.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -117,15 +108,6 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="gui\EpochWindow.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dummy\DummyGraph.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dummy\Vertex.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dummy\Chromosome.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="libs\implot\implot.h">

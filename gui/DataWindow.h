@@ -11,7 +11,11 @@ namespace gui {
         GeneticAlgorithm& geneticAlgorithm;
 
         void ensureVertexCount(int vertexCount);
-        void ensureEdge(int vertex1, int vertex2, int length);
+        void ensureEdgeLength(int vertex1, int vertex2, int length);
+
+        void renderRandomGenerationButton();
+        void renderAdjacencyMatrixTable();
+        void renderGraphPreview();
 
     public:
         DataWindow(genetic::Graph& graph, GeneticAlgorithm& geneticAlgorithm);
