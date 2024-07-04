@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <filesystem>
+#include <random>
 
 namespace gui {
     void DataWindow::ensureVertexCount(int vertexCount)
@@ -131,9 +132,42 @@ namespace gui {
 
     void DataWindow::renderRandomGenerationButton()
     {
+        // параметры случайной генерации
+        static int minEdgeLength = 1;
+        static int maxEdgeLength = 10;
+        static float edgeProbability = 0.5;
+
         // кнопка рандомной генерации
         if (ImGui::Button((const char*)u8"Рандомная генерация")) {
-            // TODO: ещё кнопку(popup) с настройкой рандомной генерации
+            std::mt19937 rng((std::random_device())());
+            std::bernoulli_distribution createEdge(edgeProbability);
+            std::uniform_int_distribution<int> edgeLength(minEdgeLength, maxEdgeLength);
+
+            for (int startVertexIndex = 0; startVertexIndex < this->graph.getVeretexCount(); startVertexIndex++) {
+                for (int endVertexIndex = 0; endVertexIndex < startVertexIndex; endVertexIndex++) {
+                    if (createEdge(rng))
+                        this->ensureEdgeLength(startVertexIndex, endVertexIndex, edgeLength(rng));
+                    else
+                        this->ensureEdgeLength(startVertexIndex, endVertexIndex, 0);
+                }
+            }
+        }
+
+        ImGui::SameLine();
+
+        // кнопка открытия настроек
+        if (ImGui::Button((const char*)u8"Настройки генерации"))
+            ImGui::OpenPopup((const char*)u8"Настройки генерации");
+
+        // настройки
+        if (ImGui::BeginPopup((const char*)u8"Настройки генерации")) {
+            ImGui::DragInt((const char*)u8"Мин. вес", &minEdgeLength, 1, 1, INT_MAX);
+
+            maxEdgeLength = std::max(minEdgeLength, maxEdgeLength);
+            ImGui::DragInt((const char*)u8"Макс. вес", &maxEdgeLength, 1, minEdgeLength, INT_MAX);
+
+            ImGui::SliderFloat((const char*)u8"Заполненность", &edgeProbability, 0, 1);
+            ImGui::EndPopup();
         }
     }
 
