@@ -8,8 +8,8 @@ namespace genetic {
 
     int Chromosome::getEdgeCount() {
         int res = 0;
-        for(bool i : this->included) {
-            if(i) res++;
+        for (bool i : this->included) {
+            if (i) res++;
         }
         return res;
     }
@@ -22,14 +22,14 @@ namespace genetic {
         int size = graph->getEdgeCount();
         std::bernoulli_distribution dist(0.5);
         this->included.resize(size);
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             this->included[i] = dist(this->rng);
         }
         this->basicGraph = graph;
     }
 
     Chromosome::Chromosome(Graph* graph, std::vector<bool>& selected) {
-        if(graph->getEdgeCount() != selected.size()) {
+        if (graph->getEdgeCount() != selected.size()) {
             throw std::invalid_argument("Wrong selected edge array size");
         }
         this->included = selected;
@@ -37,15 +37,15 @@ namespace genetic {
     }
 
     Graph* Chromosome::getGraph() {
-        if(this->correspondingGraph.getVeretexCount() != 0) {
+        if (this->correspondingGraph.getVeretexCount() != 0) {
             return &this->correspondingGraph;
         }
         int edgeId = 0;
         std::vector<Edge> includedEdges;
-        for(int i = 1; i < this->basicGraph->getVeretexCount(); i++) {
-            for(int j = 0; j < i; j++) {
-                if(this->basicGraph->getEdgeLength({ i, j }) != 0) {
-                    if(this->included[edgeId]) {
+        for (int i = 1; i < this->basicGraph->getVeretexCount(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (this->basicGraph->getEdgeLength({ i, j }) != 0) {
+                    if (this->included[edgeId]) {
                         includedEdges.push_back({ {i, j}, this->basicGraph->getEdgeLength({ i, j }) });
                     }
                     edgeId++;
@@ -63,17 +63,17 @@ namespace genetic {
     double Chromosome::getFitness() {
         int edgeId = 0;
         double fitness = 0;
-        for(int i = 1; i < this->basicGraph->getVeretexCount(); i++) {
-            for(int j = 0; j < i; j++) {
-                if(this->basicGraph->getEdgeLength({ i, j }) != 0) {
-                    if(this->included[edgeId]) {
+        for (int i = 1; i < this->basicGraph->getVeretexCount(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (this->basicGraph->getEdgeLength({ i, j }) != 0) {
+                    if (this->included[edgeId]) {
                         fitness += this->basicGraph->getEdgeLength({ i, j });
                     }
                     edgeId++;
                 }
             }
         }
-        if(this->basicGraph->getVeretexCount() - 1 < this->getEdgeCount()) {
+        if (this->basicGraph->getVeretexCount() - 1 < this->getEdgeCount()) {
             fitness += std::log(this->getEdgeCount() - (this->basicGraph->getVeretexCount() - 1) + 1) *
                 ((double)this->basicGraph->getTotalEdgeLength() / (double)this->basicGraph->getEdgeCount());
         }
@@ -88,7 +88,7 @@ namespace genetic {
     Chromosome Chromosome::mutate() {
         std::vector<bool> newIncluded = this->included;
         std::uniform_int_distribution<int> dist(0, this->included.size() - 1);
-        for(int i = 0; i < MUTATION_COUNT; i++) {
+        for (int i = 0; i < MUTATION_COUNT; i++) {
             newIncluded[dist(this->rng)] = !newIncluded[i];
         }
         return Chromosome(this->basicGraph, newIncluded);
@@ -107,10 +107,10 @@ namespace genetic {
     }
 
     std::pair<Chromosome, Chromosome> Breeder::breed(Chromosome& a, Chromosome& b) {
-        if(a.getSize() != b.getSize()) {
+        if (a.getSize() != b.getSize()) {
             throw std::invalid_argument("Different chromosome sizes to breed");
         }
-        switch(this->type) {
+        switch (this->type) {
         case SinglePoint:
             return Breeder::breedSinglePoint(a, b);
         case DoublePoint:
@@ -125,8 +125,8 @@ namespace genetic {
     std::pair<Chromosome, Chromosome> Breeder::breedSinglePoint(Chromosome& a, Chromosome& b) {
         using std::copy;
         int size = a.getSize();
-        if(size < 2) {
-            if((std::bernoulli_distribution(0.5))(Breeder::rng)) {
+        if (size < 2) {
+            if ((std::bernoulli_distribution(0.5))(Breeder::rng)) {
                 return { a, b };
             }
             return { b, a };
@@ -134,11 +134,11 @@ namespace genetic {
         std::uniform_int_distribution<int> dist(1, size - 1);
         int cutPoint = dist(Breeder::rng);
         std::vector<bool> child1Included(size), child2Included(size);
-        for(int i = 0; i < cutPoint; i++) {
+        for (int i = 0; i < cutPoint; i++) {
             child1Included[i] = a.getIncluded()[i];
             child2Included[i] = b.getIncluded()[i];
         }
-        for(int i = cutPoint; i < size; i++) {
+        for (int i = cutPoint; i < size; i++) {
             child1Included[i] = b.getIncluded()[i];
             child2Included[i] = a.getIncluded()[i];
         }
@@ -150,7 +150,7 @@ namespace genetic {
     std::pair<Chromosome, Chromosome> Breeder::breedDoublePoint(Chromosome& a, Chromosome& b) {
         using std::copy;
         int size = a.getSize();
-        if(size < 3) {
+        if (size < 3) {
             return Breeder::breedSinglePoint(a, b);
         }
         std::uniform_int_distribution<int> dist1(1, size - 2);
@@ -159,7 +159,7 @@ namespace genetic {
         int cutPoint2 = dist2(Breeder::rng);
         std::vector<bool> child1Included = a.getIncluded();
         std::vector<bool> child2Included = b.getIncluded();
-        for(int i = cutPoint1; i < cutPoint2; i++) {
+        for (int i = cutPoint1; i < cutPoint2; i++) {
             child1Included[i] = b.getIncluded()[i];
             child2Included[i] = a.getIncluded()[i];
         }
@@ -173,8 +173,8 @@ namespace genetic {
         std::bernoulli_distribution dist(0.5);
         std::vector<bool> child1Included(size), child2Included(size),
             aIncluded = a.getIncluded(), bIncluded = b.getIncluded();
-        for(int i = 0; i < size; i++) {
-            if(dist(Breeder::rng)) {
+        for (int i = 0; i < size; i++) {
+            if (dist(Breeder::rng)) {
                 child1Included[i] = aIncluded[i];
                 child2Included[i] = bIncluded[i];
             }
@@ -194,7 +194,7 @@ namespace genetic {
         this->size = size;
         this->fitnesses.resize(size);
         this->basicGraph = basicGraph;
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             this->entities.push_back(Chromosome(basicGraph));
         }
         std::sort(this->entities.begin(), this->entities.end());
@@ -208,7 +208,7 @@ namespace genetic {
         this->breeder = prev.breeder;
         this->entities = prev.entities;
         this->fitnesses = prev.fitnesses;
-        switch(this->selType) {
+        switch (this->selType) {
         case Roulette:
             breedSelectRoulette(breedProb, mutationProb);
             break;
@@ -228,22 +228,22 @@ namespace genetic {
     void Generation::breedSelectRoulette(double breedProb, double mutationProb) {
         std::vector<Chromosome> selected;
         std::uniform_real_distribution<double> roulette(0, this->fitnesses[this->size - 1]);
-        for(int i = 0; i < this->size; i++) {
+        for (int i = 0; i < this->size; i++) {
             int pos = std::lower_bound(this->fitnesses.begin(), this->fitnesses.end(), roulette(this->rng)) - this->fitnesses.begin();
             selected.push_back(this->entities[pos]);
         }
         std::bernoulli_distribution breed(breedProb);
         std::bernoulli_distribution mutation(mutationProb);
-        for(int i = 0; i < this->size / 2; i++) {
-            if(breed(this->rng)) {
+        for (int i = 0; i < this->size / 2; i++) {
+            if (breed(this->rng)) {
                 std::pair<Chromosome, Chromosome> breedingResult = this->breeder.breed(selected[i], selected[i + 1]);
-                if(mutation(this->rng)) {
+                if (mutation(this->rng)) {
                     selected[i] = breedingResult.first.mutate();
                 }
                 else {
                     selected[i] = breedingResult.first;
                 }
-                if(mutation(this->rng)) {
+                if (mutation(this->rng)) {
                     selected[i + 1] = breedingResult.second.mutate();
                 }
                 else {
@@ -325,12 +325,12 @@ namespace genetic {
     }
 
     std::pair<double, double> Generation::getGenerationStats() {
-        if(this->stats != std::pair<double, double>(-1.0, -1.0)) {
+        if (this->stats != std::pair<double, double>(-1.0, -1.0)) {
             return this->stats;
         }
         double average = 0;
         double max = 0;
-        for(auto i : this->entities) {
+        for (auto i : this->entities) {
             double current = i.getFitness();
             max = std::max(max, current);
             average += current;
@@ -341,23 +341,23 @@ namespace genetic {
 
     void Generation::computeFitnesses() {
         this->fitnesses[0] = this->entities[0].getFitness();
-        for(int i = 1; i < size; i++) {
+        for (int i = 1; i < size; i++) {
             this->fitnesses[i] = this->fitnesses[i - 1] + this->entities[i].getFitness();
         }
     }
 
     std::pair<Chromosome*, double> Generation::getEntity(int id) {
-        if(id < 0 || id >= this->size) {
+        if (id < 0 || id >= this->size) {
             throw std::invalid_argument("ID is bigger than generation size or negative");
         }
-        if(id == 0)
+        if (id == 0)
             return { &this->entities[id], this->fitnesses[id] };
         else
             return { &this->entities[id], this->fitnesses[id] - this->fitnesses[id - 1] };
     }
 
     GeneticAlgorithm::GeneticAlgorithm(Graph& graph, int generationBufferLimit) :
-        generationBufferLimit(10),
+        generationBufferLimit(generationBufferLimit),
         graph(graph),
         breedingType(SinglePoint),
         breeder(this->breedingType),
@@ -424,14 +424,14 @@ namespace genetic {
     }
 
     std::list<Generation>::iterator GeneticAlgorithm::getCurrentGeneration() {
-        if(this->generationBuffer.begin() == this->generationBuffer.end())
+        if (this->generationBuffer.begin() == this->generationBuffer.end())
             throw std::logic_error("No running!");
 
         return this->currentGeneration;
     }
 
     void GeneticAlgorithm::start() {
-        if(this->started)
+        if (this->started)
             return;
 
         this->started = true;
@@ -439,10 +439,11 @@ namespace genetic {
         this->maxGeneration++;
         this->currentGenerationNumber++;
         this->currentGeneration = this->generationBuffer.begin();
+        this->stats.push_back(this->currentGeneration->getGenerationStats());
     }
 
     void GeneticAlgorithm::stop() {
-        if(!this->started)
+        if (!this->started)
             return;
 
         this->started = false;
@@ -454,16 +455,16 @@ namespace genetic {
     }
 
     void GeneticAlgorithm::stepForward() {
-        if(!this->started)
+        if (!this->started)
             return;
 
         this->currentGenerationNumber++;
-        if(this->currentGeneration == std::prev(this->generationBuffer.end())) {
+        if (this->currentGeneration == std::prev(this->generationBuffer.end())) {
             this->maxGeneration++;
             this->generationBuffer.push_back(Generation(*this->currentGeneration, this->breedingProbability, this->mutationProbability));
             this->currentGeneration = std::next(this->currentGeneration);
             this->stats.push_back((*this->currentGeneration).getGenerationStats());
-            if(this->generationBuffer.size() > this->generationBufferLimit) {
+            if (this->generationBuffer.size() > this->generationBufferLimit) {
                 this->generationBuffer.pop_front();
             }
         }
@@ -473,24 +474,24 @@ namespace genetic {
     }
 
     void GeneticAlgorithm::stepBack() {
-        if(!this->started)
+        if (!this->started)
             return;
 
-        if(this->currentGeneration != this->generationBuffer.begin()) {
+        if (this->currentGeneration != this->generationBuffer.begin()) {
             this->currentGenerationNumber--;
             this->currentGeneration = std::prev(this->currentGeneration);
         }
     }
 
     void GeneticAlgorithm::toEnd(int finalGen) {
-        if(!this->started)
+        if (!this->started)
             return;
 
-        while(this->maxGeneration < finalGen) {
+        while (this->maxGeneration < finalGen) {
             this->stepForward();
         }
     }
-    std::vector<std::pair<double, double>> GeneticAlgorithm::getStats() {
+    const std::vector<std::pair<double, double>>& GeneticAlgorithm::getStats() {
         return this->stats;
     }
     int GeneticAlgorithm::getCurrentGenerationNumber() {

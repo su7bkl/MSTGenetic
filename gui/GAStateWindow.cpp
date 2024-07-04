@@ -1,4 +1,5 @@
 #include "gui/GAStateWindow.h"
+#include <vector>
 #include <imgui.h>
 #include <implot.h>
 
@@ -18,34 +19,53 @@ namespace gui {
             return ImGui::End();
         }
 
-        // значения параметров
-        const int currentEpoch = 17;
-        const int maxEpoch = 50;
-        const float bestTargetFunctionValue = 732.0f;
-        const float avgTargetFunctionValue = 1032.0f;
-
         // текст текущей эпохи
-        ImGui::Text((const char*)u8"Эпоха: %d из %d", currentEpoch, maxEpoch);
+        ImGui::Text((const char*)u8"Эпоха: %d из %d", this->geneticAlgorithm.getCurrentGenerationNumber(), this->geneticAlgorithm.getStats().size());
         // текст лучшего значения функции
-        ImGui::Text((const char*)u8"Лучшее значение целевой функции: %.3f", this->geneticAlgorithm.getCurrentGeneration()->getGenerationStats().first);
+        ImGui::Text((const char*)u8"Лучшее значение целевой функции: %.6f", this->geneticAlgorithm.getCurrentGeneration()->getGenerationStats().first);
         // текст среднего значения функции
-        ImGui::Text((const char*)u8"Среднее значение целевой функции: %.3f", this->geneticAlgorithm.getCurrentGeneration()->getGenerationStats().second);
+        ImGui::Text((const char*)u8"Среднее значение целевой функции: %.6f", this->geneticAlgorithm.getCurrentGeneration()->getGenerationStats().second);
 
-        //// графики
-        //if (ImPlot::BeginPlot((const char*)u8"##", ImVec2(-FLT_MIN, -FLT_MIN))) {
-        //    ImPlot::SetupAxes((const char*)u8"Эпоха", (const char*)u8"F");
-        //    ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 1, this->epoch.size());
+        // графики
+        if (ImPlot::BeginPlot((const char*)u8"##", ImVec2(-FLT_MIN, -FLT_MIN))) {
+            // более удобное представление данных
+            static std::vector<float> epoches;
+            static std::vector<float> best;
+            static std::vector<float> avg;
 
-        //    // график лучшего значения по поколениям
-        //    ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle);
-        //    ImPlot::PlotLine((const char*)u8"Лучшее", this->epoch.data(), this->best.data(), this->epoch.size());
+            // если данные обновились, то график подстраивается под данные
+            bool dataChangedFlag = false;
+            static size_t dataSize = UINT64_MAX;
 
-        //    // график среднего значения по поколениям
-        //    ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle);
-        //    ImPlot::PlotLine((const char*)u8"Среднее", this->epoch.data(), this->avg.data(), this->epoch.size());
+            dataChangedFlag = this->geneticAlgorithm.getStats().size() != dataSize;
+            dataSize = this->geneticAlgorithm.getStats().size();
 
-        //    ImPlot::EndPlot();
-        //}
+            // заполнение данных
+            epoches.resize(dataSize);
+            best.resize(dataSize);
+            avg.resize(dataSize);
+
+            for (int i = 0; i < dataSize; i++) {
+                epoches.at(i) = i + 1;
+                best.at(i) = this->geneticAlgorithm.getStats().at(i).first;
+                avg.at(i) = this->geneticAlgorithm.getStats().at(i).second;
+            }
+
+            // установка параметров осей
+            ImPlot::SetupAxes((const char*)u8"Эпоха", (const char*)u8"F", dataChangedFlag ? ImPlotAxisFlags_AutoFit : ImPlotAxisFlags_None, dataChangedFlag ? ImPlotAxisFlags_AutoFit : ImPlotAxisFlags_None);
+            ImPlot::SetupAxisLimitsConstraints(ImAxis_X1, 1, dataSize == 1 ? 2 : static_cast<double>(dataSize));
+            ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, 1);
+
+            // график лучшего значения по поколениям
+            ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle);
+            ImPlot::PlotLine((const char*)u8"Лучшее", epoches.data(), best.data(), dataSize);
+
+            // график среднего значения по поколениям
+            ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle);
+            ImPlot::PlotLine((const char*)u8"Среднее", epoches.data(), avg.data(), dataSize);
+
+            ImPlot::EndPlot();
+        }
 
         ImGui::End();
     }

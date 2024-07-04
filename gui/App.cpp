@@ -3,7 +3,7 @@
 #include <implot.h>
 
 namespace gui {
-    App::App() : running(true), graph(), geneticAlgorithm(this->graph, 1), dataWindow(this->graph, this->geneticAlgorithm), gaSettingWindow(this->geneticAlgorithm), epochWindow(this->graph, this->geneticAlgorithm), gaStateWindow(this->geneticAlgorithm)
+    App::App() : running(true), graph(), geneticAlgorithm(this->graph, 10), dataWindow(this->graph, this->geneticAlgorithm), gaSettingWindow(this->geneticAlgorithm), epochWindow(this->graph, this->geneticAlgorithm), gaStateWindow(this->geneticAlgorithm)
     {
         // минимум две вершины
         this->graph.addVertex(genetic::Vertex());

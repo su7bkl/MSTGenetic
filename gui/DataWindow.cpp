@@ -138,7 +138,7 @@ namespace gui {
         static float edgeProbability = 0.5;
 
         // кнопка рандомной генерации
-        if (ImGui::Button((const char*)u8"Рандомная генерация")) {
+        if (ImGui::Button((const char*)u8"Рандомная генерация [?]")) {
             std::mt19937 rng((std::random_device())());
             std::bernoulli_distribution createEdge(edgeProbability);
             std::uniform_int_distribution<int> edgeLength(minEdgeLength, maxEdgeLength);
@@ -153,14 +153,11 @@ namespace gui {
             }
         }
 
-        ImGui::SameLine();
-
-        // кнопка открытия настроек
-        if (ImGui::Button((const char*)u8"Настройки генерации"))
-            ImGui::OpenPopup((const char*)u8"Настройки генерации");
+        // подсказка
+        ImGui::SetItemTooltip((const char*)u8"ПКМ чтобы настроить рандомную генерацию");
 
         // настройки
-        if (ImGui::BeginPopup((const char*)u8"Настройки генерации")) {
+        if (ImGui::BeginPopupContextItem((const char*)u8"Настройки генерации")) {
             ImGui::DragInt((const char*)u8"Мин. вес", &minEdgeLength, 1, 1, INT_MAX);
 
             maxEdgeLength = std::max(minEdgeLength, maxEdgeLength);
