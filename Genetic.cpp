@@ -295,10 +295,17 @@ namespace genetic {
         oldRange = this->entities[this->size - 1].getFitness() - this->fitnessCumulativeSums[0];
         oldFirst = this->fitnessCumulativeSums[0];
         newRange = this->uniformRange.second - this->uniformRange.first;
-        this->fitnessCumulativeSums[0] = ((this->fitnessCumulativeSums[0] - oldFirst) / oldRange) * newRange + this->uniformRange.first;
-        for(int i = 1; i < this->size; i++) {
-            this->fitnessCumulativeSums[i] = ((this->entities[i].getFitness() - oldFirst) / oldRange)
-                * newRange + this->uniformRange.first + this->fitnessCumulativeSums[i - 1];
+        if(oldRange != 0.0) {
+            this->fitnessCumulativeSums[0] = ((this->fitnessCumulativeSums[0] - oldFirst) / oldRange) * newRange + this->uniformRange.first;
+            for(int i = 1; i < this->size; i++) {
+                this->fitnessCumulativeSums[i] = ((this->entities[i].getFitness() - oldFirst) / oldRange)
+                    * newRange + this->uniformRange.first + this->fitnessCumulativeSums[i - 1];
+            }
+        }
+        else {
+            for(int i = 0; i < this->size; i++) {
+                this->fitnessCumulativeSums[i] = this->uniformRange.first;
+            }
         }
         std::uniform_real_distribution<double> roulette(0, this->fitnessCumulativeSums[this->size - 1]);
         for(int i = 0; i < this->size; i++) {
