@@ -94,6 +94,10 @@ namespace genetic {
 
         Graph& graph;
 
+        std::vector< std::pair<double, double>> stats;
+
+        int currentGenerationNumber = 0;
+
     public:
         GeneticAlgorithm(Graph& graph, int generationBufferLimit);
 
@@ -125,5 +129,8 @@ namespace genetic {
         void stepBack();
         void toEnd(int finalGen);
 
+        std::vector< std::pair<double, double>> getStats();
+
+        int getCurrentGenerationNumber();
     };
 }
