@@ -57,11 +57,11 @@ namespace gui {
             ImPlot::SetupAxisLimitsConstraints(ImAxis_Y1, 0, 1);
 
             // график лучшего значения по поколениям
-            ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle);
+            ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 2.5);
             ImPlot::PlotLine((const char*)u8"Лучшее", epoches.data(), best.data(), dataSize);
 
             // график среднего значения по поколениям
-            ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle);
+            ImPlot::SetNextMarkerStyle(ImPlotMarker_Circle, 2.5);
             ImPlot::PlotLine((const char*)u8"Среднее", epoches.data(), avg.data(), dataSize);
 
             ImPlot::EndPlot();
