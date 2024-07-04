@@ -14,9 +14,17 @@ namespace gui {
 
         std::vector<int> chromosomesOrder;
         bool chromosomesSortingRequired;
+        int selectedChromosome;
+
+        // будет убрано
+        std::vector<genetic::Terminals> graphEdges;
 
         void sortChromosomes(ImGuiTableSortSpecs* sortSpecs);
         bool chromosomesComparator(ImGuiTableSortSpecs* sortSpecs, const int& left, const int& right) const;
+
+        void renderChromosomesTable();
+        void renderChromosomeInformation();
+        void renderGraphPreview();
 
     public:
         EpochWindow(genetic::Graph& graph, GeneticAlgorithm& geneticAlgorithm);
