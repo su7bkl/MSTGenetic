@@ -144,7 +144,7 @@ namespace genetic {
         const std::vector< std::pair<double, double>>& getStats();
 
         std::pair<double, double> getUniformRange();
-        void getUniformRange(std::pair<double, double> newUniformRange);
+        void setUniformRange(std::pair<double, double> newUniformRange);
 
         int getCurrentGenerationNumber();
     };
