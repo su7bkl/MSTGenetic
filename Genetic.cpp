@@ -266,4 +266,123 @@ namespace genetic {
         else
             return { &this->entities[id], this->fitnesses[id] - this->fitnesses[id - 1] };
     }
+
+    GeneticAlgorithm::GeneticAlgorithm(Graph& graph, int generationBufferLimit) :
+        graph(graph),
+        breedingType(SinglePoint),
+        breeder(this->breedingType),
+        started(false), generationSize(1),
+        selectionType(Roulette),
+        breedingProbability(0.5),
+        mutationProbability(0.5),
+        currentGeneration(generationBuffer.begin()),
+        generationBufferLimit(generationBufferLimit),
+        maxGeneration(0)
+    {
+    }
+
+    BreedingType GeneticAlgorithm::getBreedingType() {
+        return this->breedingType;
+    }
+
+    void GeneticAlgorithm::setBreedingType(BreedingType breedingType) {
+        this->breedingType = breedingType;
+        this->breeder.setBreedingType(breedingType);
+    }
+
+    SelectionType GeneticAlgorithm::getSelectionType() {
+        return this->selectionType;
+    }
+
+    void GeneticAlgorithm::setSelectionType(SelectionType selectionType) {
+        this->selectionType = selectionType;
+    }
+
+    int GeneticAlgorithm::getGenerationSize() {
+        return this->generationSize;
+    }
+
+    void GeneticAlgorithm::setGenerationSize(int generationSize) {
+        this->generationSize = generationSize;
+    }
+
+    float GeneticAlgorithm::getBreedingProbability() {
+        return this->breedingProbability;
+    }
+
+    void GeneticAlgorithm::setBreedingProbability(float breedingProbability) {
+        this->breedingProbability = breedingProbability;
+    }
+
+    float GeneticAlgorithm::getMutationProbability() {
+        return this->mutationProbability;
+    }
+
+    void GeneticAlgorithm::setMutationProbability(float mutationProbability) {
+        this->mutationProbability = mutationProbability;
+    }
+
+    bool GeneticAlgorithm::isStarted() {
+        return this->started;
+    }
+
+    std::list<Generation>::iterator GeneticAlgorithm::getCurrentGeneration() {
+        if(this->generationBuffer.begin() == this->generationBuffer.end())
+            throw std::logic_error("No running!");
+
+        return this->currentGeneration;
+    }
+
+    void GeneticAlgorithm::start() {
+        if(this->started)
+            return;
+
+        this->started = true;
+        this->generationBuffer.push_back(Generation(this->generationSize, &this->graph, this->selectionType, this->breedingType));
+        this->maxGeneration++;
+    }
+
+    void GeneticAlgorithm::stop() {
+        if(!this->started)
+            return;
+
+        this->started = false;
+        this->generationBuffer.clear();
+        this->currentGeneration = generationBuffer.begin();
+    }
+
+    void GeneticAlgorithm::stepForward() {
+        if(!this->started)
+            return;
+
+        if(this->currentGeneration == std::prev(this->generationBuffer.end())) {
+            this->maxGeneration++;
+            this->generationBuffer.push_back(Generation(*this->currentGeneration, this->breedingProbability, this->mutationProbability));
+            this->currentGeneration = std::next(this->currentGeneration);
+            if(this->generationBuffer.size() > this->generationBufferLimit) {
+                this->generationBuffer.pop_front();
+            }
+        }
+        else {
+            this->currentGeneration = std::next(this->currentGeneration);
+        }
+    }
+
+    void GeneticAlgorithm::stepBack() {
+        if(!this->started)
+            return;
+
+        if(this->currentGeneration != this->generationBuffer.begin()) {
+            this->currentGeneration = std::prev(this->currentGeneration);
+        }
+    }
+
+    void GeneticAlgorithm::toEnd(int finalGen) {
+        if(!this->started)
+            return;
+
+        while(this->maxGeneration < finalGen) {
+            this->stepForward();
+        }
+    }
 }

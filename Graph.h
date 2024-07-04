@@ -11,7 +11,7 @@
 
 
 namespace genetic {
-	typedef std::pair<int, int> Coords;
+	typedef std::pair<float, float> Coords;
 	typedef std::pair<int, int> Terminals;
 	typedef std::pair<Terminals, int> Edge;
 
@@ -20,13 +20,14 @@ namespace genetic {
 		Coords pos;
 	public:
 		Vertex();
-		Vertex(int x, int y);
+		Vertex(float xy);
+		Vertex(float x, float y);
 		Coords getPos();
-		int getX();
-		int getY();
+		float getX();
+		float getY();
 		void setPos(Coords newPos);
-		void setX(int newX);
-		void setY(int newX);
+		void setX(float newX);
+		void setY(float newX);
 	};
 
 	class Graph {
