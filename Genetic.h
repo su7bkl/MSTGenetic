@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <unordered_set>
 #include <list>
+#include <compare>
 
 #include "Graph.h"
 
@@ -20,7 +21,9 @@ namespace genetic {
     };
 
     enum SelectionType {
-        Roulette
+        Roulette,
+        RangedRoulette,
+        Uniform
     };
 
     class Chromosome {
@@ -39,6 +42,9 @@ namespace genetic {
         Chromosome(Graph* graph);
         Chromosome(Graph* graph, std::vector<bool>& selected);
         Chromosome mutate();
+        friend auto operator<=>(genetic::Chromosome& first, genetic::Chromosome& second) {
+            return (first.getFitness() <=> second.getFitness());
+        }
     };
 
     class Breeder {
@@ -58,7 +64,7 @@ namespace genetic {
     class Generation {
     private:
         static std::mt19937 rng;
-        std::pair<double, double> stats = {-1.0, -1.0};
+        std::pair<double, double> stats = { -1.0, -1.0 };
         std::vector<Chromosome> entities;
         std::vector<double> fitnesses;
         Graph* basicGraph;
@@ -66,6 +72,8 @@ namespace genetic {
         SelectionType selType;
         Breeder breeder;
         void breedSelectRoulette(double breedProb, double mutationProb);
+        void breedSelectRangedRoulette(double breedProb, double mutationProb);
+        void breedSelectUniform(double breedProb, double mutationProb);
         void computeFitnesses();
     public:
         Generation(int size, Graph* basicGraph, SelectionType selType, BreedingType breedType);
@@ -134,3 +142,4 @@ namespace genetic {
         int getCurrentGenerationNumber();
     };
 }
+
