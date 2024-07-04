@@ -11,6 +11,22 @@ namespace gui {
         if (!ImGui::Begin((const char*)u8"Настройки ГА"))
             return ImGui::End();
 
+        // число эпох в памяти
+        {
+            if (this->geneticAlgorithm.isStarted())
+                ImGui::BeginDisabled();
+
+            int generationBufferLimit = this->geneticAlgorithm.getGenerationBufferLimit();
+            ImGui::InputInt((const char*)u8"Число эпох в памяти", &generationBufferLimit, 1, 10);
+            generationBufferLimit = std::max(generationBufferLimit, 1);
+            this->geneticAlgorithm.setGenerationBufferLimit(generationBufferLimit);
+
+            if (this->geneticAlgorithm.isStarted())
+                ImGui::EndDisabled();
+        }
+
+        ImGui::Spacing();
+
         // размер популяции
         {
             if (this->geneticAlgorithm.isStarted())
