@@ -62,26 +62,24 @@ namespace gui {
         this->geneticAlgorithm.setBreedingType(static_cast<genetic::BreedingType>(breedingType));
 
         // вид отбора
-        ImGui::BeginDisabled();
         const char* selectionTypeNames[] = { (const char*)u8"Рулетка", (const char*)u8"Ранжирование", (const char*)u8"Равномерное" };
-        int selectionType = 0;
+        int selectionType = static_cast<int>(this->geneticAlgorithm.getSelectionType());
         ImGui::Combo((const char*)u8"Вид отбора", &selectionType, selectionTypeNames, IM_ARRAYSIZE(selectionTypeNames));
         this->geneticAlgorithm.setSelectionType(static_cast<genetic::SelectionType>(selectionType));
-        ImGui::EndDisabled();
 
         ImGui::Spacing();
 
         // отключает пункт ниже если выбран другой вид отбора
-        //if (selectionType != 2)
-        ImGui::BeginDisabled();
+        if (selectionType != 2)
+            ImGui::BeginDisabled();
 
         // границы значений при равномерном отборе
         float uniformSelectionBorders[2] = { 0.0f , 1.0f };
         ImGui::InputFloat2((const char*)u8"Диапазон значений при равномерном отборе", uniformSelectionBorders);
         uniformSelectionBorders[1] = std::max(uniformSelectionBorders[0] + 1.0f, uniformSelectionBorders[1]);
 
-        //if (selectionType != 2)
-        ImGui::EndDisabled();
+        if (selectionType != 2)
+            ImGui::EndDisabled();
 
         ImGui::End();
     }
