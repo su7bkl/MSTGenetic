@@ -23,6 +23,8 @@ namespace gui {
 
         void renderChromosomesTable();
         void renderChromosomeInformation();
+
+        void drawDashLine(ImDrawList* drawList, ImVec2 start, ImVec2 end, ImU32 color, float thickness, float interval);
         void renderGraphPreview();
 
     public:
