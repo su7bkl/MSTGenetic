@@ -119,6 +119,5 @@ namespace genetic {
         void stepBack();
         void toEnd(int finalGen);
 
-        ~GeneticAlgorithm();
     };
 }
