@@ -162,7 +162,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Genetic.cpp" />
-    <ClCompile Include="dummy\GeneticAlgorithm.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="gui\GAStateWindow.cpp" />
     <ClCompile Include="gui\EpochWindow.cpp" />
@@ -185,7 +184,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Genetic.h" />
-    <ClInclude Include="dummy\GeneticAlgorithm.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="gui\GAStateWindow.h" />
     <ClInclude Include="gui\EpochWindow.h" />

@@ -64,9 +64,10 @@ namespace genetic {
     class Generation {
     private:
         static std::mt19937 rng;
+        std::pair<double, double> uniformRange;
         std::pair<double, double> stats = { -1.0, -1.0 };
         std::vector<Chromosome> entities;
-        std::vector<double> fitnesses;
+        std::vector<double> fitnessCumulativeSums;
         Graph* basicGraph;
         int size;
         SelectionType selType;
@@ -77,7 +78,7 @@ namespace genetic {
         void computeFitnesses();
     public:
         Generation(int size, Graph* basicGraph, SelectionType selType, BreedingType breedType);
-        Generation(Generation& prev, double breedProb, double mutationProb);
+        Generation(Generation& prev, double breedProb, double mutationProb, std::pair<double, double> uniformRange);
         std::pair<Chromosome*, double> getEntity(int id);
         int getSize();
         //first is avg, second is max
@@ -89,22 +90,25 @@ namespace genetic {
         BreedingType breedingType;
         SelectionType selectionType;
         int generationSize;
-        float breedingProbability;
-        float mutationProbability;
+        int currentGenerationNumber = 0;
+        double breedingProbability;
+        double mutationProbability;
 
-        Breeder breeder;
+        std::pair<double, double> uniformRange;
+
         std::list<Generation> generationBuffer;
         std::list<Generation>::iterator currentGeneration;
+
         int generationBufferLimit;
         int maxGeneration;
-
-        bool started;
 
         Graph& graph;
 
         std::vector< std::pair<double, double>> stats;
 
-        int currentGenerationNumber = 0;
+        Breeder breeder;
+
+        bool started;
 
     public:
         GeneticAlgorithm(Graph& graph, int generationBufferLimit);
@@ -121,11 +125,11 @@ namespace genetic {
         int getGenerationBufferLimit();
         void setGenerationBufferLimit(int newGenerationBufferLimit);
 
-        float getBreedingProbability();
-        void setBreedingProbability(float breedingProbability);
+        double getBreedingProbability();
+        void setBreedingProbability(double breedingProbability);
 
-        float getMutationProbability();
-        void setMutationProbability(float mutationProbability);
+        double getMutationProbability();
+        void setMutationProbability(double mutationProbability);
 
         bool isStarted();
 
@@ -138,6 +142,9 @@ namespace genetic {
         void toEnd(int finalGen);
 
         const std::vector< std::pair<double, double>>& getStats();
+
+        std::pair<double, double> getUniformRange();
+        void getUniformRange(std::pair<double, double> newUniformRange);
 
         int getCurrentGenerationNumber();
     };
