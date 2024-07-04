@@ -240,8 +240,20 @@ namespace gui {
         ImGui::SameLine();
 
         // кнопка "до конца"
-        if (ImGui::Button((const char*)u8"До конца")) {
-            // пока ничего
+        static int endEpochNumber = 1;
+        endEpochNumber = std::max(endEpochNumber, this->geneticAlgorithm.getCurrentGenerationNumber() + 1);
+        if (ImGui::Button(std::format("До {}-й эпохи [?]", endEpochNumber).c_str())) {
+            this->geneticAlgorithm.toEnd(endEpochNumber);
+            this->chromosomesSortingRequired = true;
+        }
+
+        // подсказка
+        ImGui::SetItemTooltip((const char*)u8"ПКМ чтобы настроить до какой эпохи перемотать");
+
+        // настройка до какой эпохи перематывать
+        if (ImGui::BeginPopupContextItem((const char*)u8"Настройки перемотки")) {
+            ImGui::DragInt((const char*)u8"Эпоха", &endEpochNumber, 1, this->geneticAlgorithm.getCurrentGenerationNumber() + 1, INT_MAX);
+            ImGui::EndPopup();
         }
 
         ImGui::SameLine();

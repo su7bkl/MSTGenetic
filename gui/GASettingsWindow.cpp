@@ -25,13 +25,6 @@ namespace gui {
                 ImGui::EndDisabled();
         }
 
-        // число эпох
-        ImGui::BeginDisabled();
-        int epochCount = 100;
-        ImGui::InputInt((const char*)u8"Число эпох", &epochCount, 10, 100);
-        epochCount = std::max(epochCount, 1);
-        ImGui::EndDisabled();
-
         ImGui::Spacing();
 
         // вероятность мутации
