@@ -161,8 +161,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Genetic.cpp" />
-    <ClCompile Include="Graph.cpp" />
+    <ClCompile Include="logic\Genetic.cpp" />
+    <ClCompile Include="logic\Graph.cpp" />
     <ClCompile Include="gui\GAStateWindow.cpp" />
     <ClCompile Include="gui\EpochWindow.cpp" />
     <ClCompile Include="gui\GASettingsWindow.cpp" />
@@ -183,8 +183,8 @@
     <ClCompile Include="gui\BaseWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Genetic.h" />
-    <ClInclude Include="Graph.h" />
+    <ClInclude Include="logic\Genetic.h" />
+    <ClInclude Include="logic\Graph.h" />
     <ClInclude Include="gui\GAStateWindow.h" />
     <ClInclude Include="gui\EpochWindow.h" />
     <ClInclude Include="gui\GASettingsWindow.h" />

@@ -1,7 +1,7 @@
 #pragma once
 #include "gui/BaseWindow.h"
-#include "Graph.h"
-#include "Genetic.h"
+#include "logic/Graph.h"
+#include "logic/Genetic.h"
 
 namespace gui {
     class DataWindow : public BaseWindow

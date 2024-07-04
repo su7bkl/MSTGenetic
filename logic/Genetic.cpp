@@ -1,4 +1,4 @@
-#include "Genetic.h"
+#include "logic/Genetic.h"
 #include <iostream>
 
 namespace genetic {

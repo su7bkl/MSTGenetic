@@ -1,4 +1,4 @@
-#include "Graph.h"
+#include "logic/Graph.h"
 
 
 namespace genetic {

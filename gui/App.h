@@ -3,8 +3,8 @@
 #include "gui/GASettingsWindow.h"
 #include "gui/EpochWindow.h"
 #include "gui/GAStateWindow.h"
-#include "Graph.h"
-#include "Genetic.h"
+#include "logic/Graph.h"
+#include "logic/Genetic.h"
 
 namespace gui {
     class App

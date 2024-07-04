@@ -1,9 +1,9 @@
 #pragma once
 #include "gui/BaseWindow.h"
-#include "Graph.h"
 #include <vector>
 #include <imgui.h>
-#include "Genetic.h"
+#include "logic/Graph.h"
+#include "logic/Genetic.h"
 
 namespace gui {
     class EpochWindow : public BaseWindow

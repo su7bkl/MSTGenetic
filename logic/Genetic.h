@@ -8,7 +8,7 @@
 #include <list>
 #include <compare>
 
-#include "Graph.h"
+#include "logic/Graph.h"
 
 #define MUTATION_COUNT 1
 #define CACHE_SIZE 1000

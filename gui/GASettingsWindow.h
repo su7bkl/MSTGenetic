@@ -1,6 +1,6 @@
 #pragma once
 #include "gui/BaseWindow.h"
-#include "Genetic.h"
+#include "logic/Genetic.h"
 
 namespace gui {
     class GASettingsWindow : public BaseWindow
