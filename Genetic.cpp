@@ -294,7 +294,8 @@ namespace genetic {
         breedingProbability(0.5),
         mutationProbability(0.5),
         currentGeneration(generationBuffer.begin()),
-        maxGeneration(0) {
+        maxGeneration(0),
+        currentGenerationNumber(0) {
     }
 
     BreedingType GeneticAlgorithm::getBreedingType() {
@@ -364,6 +365,8 @@ namespace genetic {
         this->started = true;
         this->generationBuffer.push_back(Generation(this->generationSize, &this->graph, this->selectionType, this->breedingType));
         this->maxGeneration++;
+        this->currentGenerationNumber++;
+        this->currentGeneration = this->generationBuffer.begin();
     }
 
     void GeneticAlgorithm::stop() {
@@ -372,17 +375,22 @@ namespace genetic {
 
         this->started = false;
         this->generationBuffer.clear();
-        this->currentGeneration = generationBuffer.begin();
+        this->currentGeneration = this->generationBuffer.begin();
+        this->stats.clear();
+        this->maxGeneration = 0;
+        this->currentGenerationNumber = 0;
     }
 
     void GeneticAlgorithm::stepForward() {
         if(!this->started)
             return;
 
+        this->currentGenerationNumber++;
         if(this->currentGeneration == std::prev(this->generationBuffer.end())) {
             this->maxGeneration++;
             this->generationBuffer.push_back(Generation(*this->currentGeneration, this->breedingProbability, this->mutationProbability));
             this->currentGeneration = std::next(this->currentGeneration);
+            this->stats.push_back((*this->currentGeneration).getGenerationStats());
             if(this->generationBuffer.size() > this->generationBufferLimit) {
                 this->generationBuffer.pop_front();
             }
@@ -397,6 +405,7 @@ namespace genetic {
             return;
 
         if(this->currentGeneration != this->generationBuffer.begin()) {
+            this->currentGenerationNumber--;
             this->currentGeneration = std::prev(this->currentGeneration);
         }
     }
@@ -408,5 +417,11 @@ namespace genetic {
         while(this->maxGeneration < finalGen) {
             this->stepForward();
         }
+    }
+    std::vector<std::pair<double, double>> GeneticAlgorithm::getStats() {
+        return this->stats;
+    }
+    int GeneticAlgorithm::getCurrentGenerationNumber() {
+        return this->currentGenerationNumber;
     }
 }
