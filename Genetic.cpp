@@ -215,7 +215,7 @@ namespace genetic {
         case RangedRoulette:
             breedSelectRangedRoulette(breedProb, mutationProb);
             break;
-        case Uniform:
+        case UniformDist:
             breedSelectUniform(breedProb, mutationProb);
             break;
         default:
@@ -256,11 +256,11 @@ namespace genetic {
 
     void Generation::breedSelectRangedRoulette(double breedProb, double mutationProb) {
         std::vector<Chromosome> selected;
-        std::vector<double> rangedWeights;
+        std::vector<int> rangedWeights;
         for(int i = 0; i < this->size; i++) {
             rangedWeights.push_back((i + i * i) / 2);
         }
-        std::uniform_int_distribution<double> rangedRoulette(0, rangedWeights[this->size - 1]);
+        std::uniform_int_distribution<int> rangedRoulette(0, rangedWeights[this->size - 1]);
         for(int i = 0; i < this->size; i++) {
             int pos = std::lower_bound(rangedWeights.begin(), rangedWeights.end(), rangedRoulette(this->rng)) - rangedWeights.begin();
             selected.push_back(this->entities[pos]);
