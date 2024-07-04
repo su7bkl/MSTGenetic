@@ -36,8 +36,8 @@ namespace gui {
             // если данные обновились, то график подстраивается под данные
             bool dataChangedFlag = false;
             static size_t dataSize = UINT64_MAX;
-            if (this->geneticAlgorithm.getStats().size() != dataSize)
-                dataChangedFlag = true;
+
+            dataChangedFlag = this->geneticAlgorithm.getStats().size() != dataSize;
             dataSize = this->geneticAlgorithm.getStats().size();
 
             // заполнение данных
