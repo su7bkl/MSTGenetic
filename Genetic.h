@@ -23,7 +23,7 @@ namespace genetic {
     enum SelectionType {
         Roulette,
         RangedRoulette,
-        Uniform
+        UniformDist
     };
 
     class Chromosome {
