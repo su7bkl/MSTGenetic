@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <vector>
 #include <string>
+#include <iostream>
+#include <filesystem>
 
 namespace gui {
     void DataWindow::ensureVertexCount(int vertexCount)
@@ -32,6 +34,99 @@ namespace gui {
             this->graph.addEdge({ { vertex1, vertex2 }, length });
         else
             this->graph.changeEdgeLength({ vertex1, vertex2 }, length);
+    }
+
+    bool DataWindow::importGraph(std::string path)
+    {
+        // инициализация файла
+        std::ifstream importFile(path);
+
+        // временное хранение считанных данных для валидации
+        int newVertexCount = 0;
+        std::vector<std::vector<int>> newAdjacencyMatrix;
+        std::vector<genetic::Coords> newVerexCoords;
+
+        // считывание числа вершин
+        importFile >> newVertexCount;
+        if (importFile.fail() || newVertexCount < 2) {
+            importFile.close();
+            return false;
+        }
+
+        // считывание матрицы смежности
+        newAdjacencyMatrix.resize(newVertexCount);
+        for (int startVertexIndex = 0; startVertexIndex < newVertexCount; startVertexIndex++) {
+            newAdjacencyMatrix.at(startVertexIndex).resize(newVertexCount);
+
+            for (int endVertexIndex = 0; endVertexIndex < newVertexCount; endVertexIndex++) {
+                importFile >> newAdjacencyMatrix.at(startVertexIndex).at(endVertexIndex);
+
+                if (importFile.fail() || newAdjacencyMatrix.at(startVertexIndex).at(endVertexIndex) < 0) {
+                    importFile.close();
+                    return false;
+                }
+
+                if (startVertexIndex == endVertexIndex && newAdjacencyMatrix.at(startVertexIndex).at(endVertexIndex) != 0) {
+                    importFile.close();
+                    return false;
+                }
+            }
+        }
+
+        // считывание координат вершин
+        newVerexCoords.resize(newVertexCount);
+        for (int vertexIndex = 0; vertexIndex < newVertexCount; vertexIndex++) {
+            importFile >> newVerexCoords.at(vertexIndex).first >> newVerexCoords.at(vertexIndex).second;
+
+            if (importFile.fail()) {
+                importFile.close();
+                return false;
+            }
+        }
+
+        importFile.close();
+
+        // перенос считанных данных если всё нормально
+        this->ensureVertexCount(newVertexCount);
+        for (int startVertexIndex = 0; startVertexIndex < newVertexCount; startVertexIndex++) {
+            for (int endVertexIndex = 0; endVertexIndex < newVertexCount; endVertexIndex++) {
+                this->ensureEdgeLength(startVertexIndex, endVertexIndex, newAdjacencyMatrix.at(startVertexIndex).at(endVertexIndex));
+            }
+
+            this->graph.changeVertexCoords(startVertexIndex, newVerexCoords.at(startVertexIndex));
+        }
+
+        return true;
+    }
+
+    bool DataWindow::exportGraph(std::string path)
+    {
+        // открытие файла на запись
+        std::ofstream exportFile(path, std::ofstream::trunc);
+
+        // проверка на ошибки
+        if (!exportFile.is_open())
+            return false;
+
+        // запись числа вершин
+        exportFile << this->graph.getVeretexCount() << "\n";
+
+        // запись матрицы смежности
+        for (int startVertexIndex = 0; startVertexIndex < this->graph.getVeretexCount(); startVertexIndex++) {
+            for (int endVertexIndex = 0; endVertexIndex < this->graph.getVeretexCount(); endVertexIndex++) {
+                exportFile << this->graph.getEdgeLength({ startVertexIndex, endVertexIndex }) << " ";
+            }
+
+            exportFile << "\n";
+        }
+
+        // запись координат вершин
+        for (int vertexIndex = 0; vertexIndex < this->graph.getVeretexCount(); vertexIndex++) {
+            exportFile << this->graph.getVertex(vertexIndex).getX() << " " << this->graph.getVertex(vertexIndex).getY() << "\n";
+        }
+
+        exportFile.close();
+        return true;
     }
 
     void DataWindow::renderRandomGenerationButton()
@@ -163,6 +258,59 @@ namespace gui {
         ImGui::EndChild();
     }
 
+    void DataWindow::renderModalWindows()
+    {
+        constexpr ImVec2 MIN_FILE_DIALOG_SIZE = ImVec2(400, 300);
+
+        // диалоговое окно импорта графа
+        if (ImGuiFileDialog::Instance()->Display("##importFileDialog", ImGuiWindowFlags_NoCollapse, MIN_FILE_DIALOG_SIZE)) {
+            if (ImGuiFileDialog::Instance()->IsOk()) {
+                std::string filename = ImGuiFileDialog::Instance()->GetFilePathName();
+                std::string filepath = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+                std::filesystem::path fullpath = filepath;
+                fullpath /= filename;
+
+                if (!this->importGraph(fullpath.generic_string()))
+                    ImGui::OpenPopup((const char*)u8"Ошибка импорта");
+            }
+
+            ImGuiFileDialog::Instance()->Close();
+        }
+
+        // popup ошибки импорта
+        if (ImGui::BeginPopupModal((const char*)u8"Ошибка импорта", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+            ImGui::Text((const char*)u8"Файл повреждён или имеет неподдерживаемый формат данных");
+            if (ImGui::Button("OK"))
+                ImGui::CloseCurrentPopup();
+            ImGui::EndPopup();
+        }
+
+        // диалоговое окно экспорта графа
+        if (ImGuiFileDialog::Instance()->Display("##exportFileDialog", ImGuiWindowFlags_NoCollapse, MIN_FILE_DIALOG_SIZE)) {
+            if (ImGuiFileDialog::Instance()->IsOk()) {
+                std::string filename = ImGuiFileDialog::Instance()->GetFilePathName();
+                std::string filepath = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+                std::filesystem::path fullpath = filepath;
+                fullpath /= filename;
+
+                if (!this->exportGraph(fullpath.generic_string()))
+                    ImGui::OpenPopup((const char*)u8"Ошибка экспорта!");
+            }
+
+            ImGuiFileDialog::Instance()->Close();
+        }
+
+        // popup ошибки экспорта
+        if (ImGui::BeginPopupModal((const char*)u8"Ошибка экспорта!", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+            ImGui::Text((const char*)u8"Невозможно открыть файл на запись");
+            if (ImGui::Button("OK"))
+                ImGui::CloseCurrentPopup();
+            ImGui::EndPopup();
+        }
+    }
+
     DataWindow::DataWindow(genetic::Graph& graph, GeneticAlgorithm& geneticAlgorithm) :
         graph(graph),
         geneticAlgorithm(geneticAlgorithm)
@@ -217,28 +365,7 @@ namespace gui {
         }
         ImGui::End();
 
-        constexpr ImVec2 MIN_FILE_DIALOG_SIZE = ImVec2(400, 300);
-
-        // диалоговое окно импорта графа
-        if (ImGuiFileDialog::Instance()->Display("##importFileDialog", ImGuiWindowFlags_NoCollapse, MIN_FILE_DIALOG_SIZE)) {
-            if (ImGuiFileDialog::Instance()->IsOk()) {
-                std::string filename = ImGuiFileDialog::Instance()->GetFilePathName();
-                std::string filepath = ImGuiFileDialog::Instance()->GetCurrentPath();
-
-            }
-
-            ImGuiFileDialog::Instance()->Close();
-        }
-
-        // диалоговое окно экспорта графа
-        if (ImGuiFileDialog::Instance()->Display("##exportFileDialog", ImGuiWindowFlags_NoCollapse, MIN_FILE_DIALOG_SIZE)) {
-            if (ImGuiFileDialog::Instance()->IsOk()) {
-                std::string filename = ImGuiFileDialog::Instance()->GetFilePathName();
-                std::string filepath = ImGuiFileDialog::Instance()->GetCurrentPath();
-                // пока ничего не происходит
-            }
-
-            ImGuiFileDialog::Instance()->Close();
-        }
+        // окна открытия файлов и ошибки открытия файлов
+        this->renderModalWindows();
     }
 }
