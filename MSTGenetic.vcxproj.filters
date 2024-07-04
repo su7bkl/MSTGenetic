@@ -75,9 +75,6 @@
     <ClCompile Include="libs\imgui\imgui_widgets.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="dummy\GeneticAlgorithm.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graph.h">
@@ -150,9 +147,6 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="libs\imgui\imgui_internal.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="dummy\GeneticAlgorithm.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
