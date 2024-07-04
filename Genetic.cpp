@@ -250,12 +250,25 @@ namespace genetic {
         return this->size;
     }
 
+    std::pair<double, double> Generation::getGenerationStats() {
+        double average = 0;
+        double max = 0;
+        for(auto i : this->entities) {
+            double current = i.getFitness();
+            max = std::max(max, current);
+            average += current;
+        }
+        return { max, average / this->size };
+    }
+
     void Generation::computeFitnesses() {
         this->fitnesses[0] = this->entities[0].getFitness();
         for(int i = 1; i < size; i++) {
             this->fitnesses[i] = this->fitnesses[i - 1] + this->entities[i].getFitness();
         }
     }
+
+
 
     std::pair<Chromosome*, double> Generation::getEntity(int id) {
         if(id < 0 || id >= this->size) {

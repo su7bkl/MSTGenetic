@@ -71,6 +71,8 @@ namespace genetic {
         Generation(Generation& prev, double breedProb, double mutationProb);
         std::pair<Chromosome*, double> getEntity(int id);
         int getSize();
+        //first is avg, second is max
+        std::pair<double, double> getGenerationStats();
     };
 
     class GeneticAlgorithm {
