@@ -73,8 +73,8 @@ namespace genetic {
                 }
             }
         }
-        if(this->basicGraph->getVeretexCount() - 1 < this->getEdgeCount()) {
-            fitness += std::log(this->getEdgeCount() - (this->basicGraph->getVeretexCount() - 1) + 1) *
+        if(this->basicGraph->getVeretexCount() - 1 != this->getEdgeCount()) {
+            fitness += std::log1p(abs(this->getEdgeCount() - (this->basicGraph->getVeretexCount() - 1))) *
                 ((double)this->basicGraph->getTotalEdgeLength() / (double)this->basicGraph->getEdgeCount());
         }
         fitness += (std::log(this->getGraph()->getConnectedComponentsCount()) * this->basicGraph->getTotalEdgeLength());
@@ -505,7 +505,7 @@ namespace genetic {
     std::pair<double, double> GeneticAlgorithm::getUniformRange() {
         return this->uniformRange;
     }
-    void GeneticAlgorithm::getUniformRange(std::pair<double, double> newUniformRange) {
+    void GeneticAlgorithm::setUniformRange(std::pair<double, double> newUniformRange) {
         this->uniformRange = newUniformRange;
     }
     int GeneticAlgorithm::getCurrentGenerationNumber() {
