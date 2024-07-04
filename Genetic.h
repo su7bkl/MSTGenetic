@@ -129,7 +129,7 @@ namespace genetic {
         void stepBack();
         void toEnd(int finalGen);
 
-        std::vector< std::pair<double, double>> getStats();
+        const std::vector< std::pair<double, double>>& getStats();
 
         int getCurrentGenerationNumber();
     };

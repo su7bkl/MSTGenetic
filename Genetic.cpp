@@ -367,6 +367,7 @@ namespace genetic {
         this->maxGeneration++;
         this->currentGenerationNumber++;
         this->currentGeneration = this->generationBuffer.begin();
+        this->stats.push_back(this->currentGeneration->getGenerationStats());
     }
 
     void GeneticAlgorithm::stop() {
@@ -418,7 +419,7 @@ namespace genetic {
             this->stepForward();
         }
     }
-    std::vector<std::pair<double, double>> GeneticAlgorithm::getStats() {
+    const std::vector<std::pair<double, double>>& GeneticAlgorithm::getStats() {
         return this->stats;
     }
     int GeneticAlgorithm::getCurrentGenerationNumber() {
