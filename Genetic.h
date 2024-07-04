@@ -58,6 +58,7 @@ namespace genetic {
     class Generation {
     private:
         static std::mt19937 rng;
+        std::pair<double, double> stats = {-1.0, -1.0};
         std::vector<Chromosome> entities;
         std::vector<double> fitnesses;
         Graph* basicGraph;
@@ -104,6 +105,9 @@ namespace genetic {
 
         int getGenerationSize();
         void setGenerationSize(int generationSize);
+
+        int getGenerationBufferLimit();
+        void setGenerationBufferLimit(int newGenerationBufferLimit);
 
         float getBreedingProbability();
         void setBreedingProbability(float breedingProbability);

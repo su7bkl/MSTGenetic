@@ -251,6 +251,9 @@ namespace genetic {
     }
 
     std::pair<double, double> Generation::getGenerationStats() {
+        if(this->stats != std::pair<double, double>(-1.0, -1.0)) {
+            return this->stats;
+        }
         double average = 0;
         double max = 0;
         for(auto i : this->entities) {
@@ -258,7 +261,8 @@ namespace genetic {
             max = std::max(max, current);
             average += current;
         }
-        return { max, average / this->size };
+        this->stats = { max, average / this->size };
+        return  this->stats;
     }
 
     void Generation::computeFitnesses() {
@@ -281,6 +285,7 @@ namespace genetic {
     }
 
     GeneticAlgorithm::GeneticAlgorithm(Graph& graph, int generationBufferLimit) :
+        generationBufferLimit(10),
         graph(graph),
         breedingType(SinglePoint),
         breeder(this->breedingType),
@@ -289,9 +294,7 @@ namespace genetic {
         breedingProbability(0.5),
         mutationProbability(0.5),
         currentGeneration(generationBuffer.begin()),
-        generationBufferLimit(generationBufferLimit),
-        maxGeneration(0)
-    {
+        maxGeneration(0) {
     }
 
     BreedingType GeneticAlgorithm::getBreedingType() {
@@ -317,6 +320,14 @@ namespace genetic {
 
     void GeneticAlgorithm::setGenerationSize(int generationSize) {
         this->generationSize = generationSize;
+    }
+
+    int GeneticAlgorithm::getGenerationBufferLimit() {
+        return this->generationBufferLimit;
+    }
+
+    void GeneticAlgorithm::setGenerationBufferLimit(int newGenerationBufferLimit) {
+        this->generationBufferLimit = newGenerationBufferLimit;
     }
 
     float GeneticAlgorithm::getBreedingProbability() {
