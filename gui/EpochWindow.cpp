@@ -149,6 +149,37 @@ namespace gui {
         this->renderGraphPreview();
     }
 
+    void EpochWindow::drawDashLine(ImDrawList* drawList, ImVec2 start, ImVec2 end, ImU32 color, float thickness, float interval)
+    {
+        // длина прямой
+        float lineDistance = std::sqrt((start.x - end.x) * (start.x - end.x) + (start.y - end.y) * (start.y - end.y));
+        // число целых интервалов
+        int dashCount = std::floor(lineDistance / interval);
+
+        // сдвиг по XY для одного интервала
+        float dashOffsetX = (end.x - start.x) / lineDistance * interval;
+        float dashOffsetY = (end.y - start.y) / lineDistance * interval;
+
+        // начло/конец интервала
+        ImVec2 intervalStart = start;
+        ImVec2 intervalEnd = { start.x + dashOffsetX, start.y + dashOffsetY };
+
+        for (int i = 0; i < dashCount; i += 2) {
+            // нарисовать интервал
+            drawList->AddLine(intervalStart, intervalEnd, color, thickness);
+
+            // сдвинуть на два (чередование пустой-непустой)
+            intervalStart.x += dashOffsetX * 2;
+            intervalStart.y += dashOffsetY * 2;
+            intervalEnd.x += dashOffsetX * 2;
+            intervalEnd.y += dashOffsetY * 2;
+        }
+
+        // в некоторых случаях надо дорисовать последний интервал
+        if (dashCount % 2 == 0)
+            drawList->AddLine(intervalStart, end, color, thickness);
+    }
+
     void EpochWindow::renderGraphPreview()
     {
         ImGui::Text((const char*)u8"Представление подграфа:");
@@ -162,9 +193,11 @@ namespace gui {
             ImVec2 drawOrigin = ImGui::GetCursorScreenPos();
 
             // настрока отрисовки (можно вынести в отдельное окно)
-            constexpr ImU32 EDGE_COLOR = IM_COL32(255, 255, 255, 255);
+            constexpr ImU32 EDGE_COLOR = IM_COL32(127, 127, 127, 255);
             constexpr ImU32 EDGE_INCLUDED_COLOR = IM_COL32(0, 255, 0, 255);
-            constexpr float EDGE_THICKNESS = 3;
+            constexpr float EDGE_THICKNESS = 2;
+            constexpr float EDGE_INCLUDED_THICKNESS = 3;
+            constexpr float EDGE_DASH_INTERVAL = 15;
 
             constexpr ImU32 VERTEX_COLOR = IM_COL32(255, 255, 255, 255);
             constexpr ImU32 VERTEX_LABEL_COLOR = IM_COL32(0, 0, 0, 255);
@@ -177,8 +210,13 @@ namespace gui {
                 genetic::Vertex endVertex = this->graph.getVertex(this->graphEdges.at(edgeIndex).second);
 
                 bool isEdgeIncluded = this->geneticAlgorithm.getCurrentGeneration()->getEntity(this->selectedChromosome).first->getIncluded().at(edgeIndex);
+                ImVec2 startPos = ImVec2(startVertex.getX() + drawOrigin.x, startVertex.getY() + drawOrigin.y);
+                ImVec2 endPos = ImVec2(endVertex.getX() + drawOrigin.x, endVertex.getY() + drawOrigin.y);
 
-                drawList->AddLine(ImVec2(startVertex.getX() + drawOrigin.x, startVertex.getY() + drawOrigin.y), ImVec2(endVertex.getX() + drawOrigin.x, endVertex.getY() + drawOrigin.y), isEdgeIncluded ? EDGE_INCLUDED_COLOR : EDGE_COLOR, EDGE_THICKNESS);
+                if (isEdgeIncluded)
+                    drawList->AddLine(startPos, endPos, EDGE_INCLUDED_COLOR, EDGE_INCLUDED_THICKNESS);
+                else
+                    this->drawDashLine(drawList, startPos, endPos, EDGE_COLOR, EDGE_THICKNESS, EDGE_DASH_INTERVAL);
             }
 
             // отрисовка вершин
