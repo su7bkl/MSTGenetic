@@ -75,8 +75,11 @@ namespace gui {
 
         // границы значений при равномерном отборе
         float uniformSelectionBorders[2] = { 0.0f , 1.0f };
+        uniformSelectionBorders[0] = this->geneticAlgorithm.getUniformRange().first;
+        uniformSelectionBorders[1] = this->geneticAlgorithm.getUniformRange().second;
         ImGui::InputFloat2((const char*)u8"Диапазон значений при равномерном отборе", uniformSelectionBorders);
         uniformSelectionBorders[1] = std::max(uniformSelectionBorders[0] + 1.0f, uniformSelectionBorders[1]);
+        this->geneticAlgorithm.setUniformRange({ uniformSelectionBorders[0], uniformSelectionBorders[1] });
 
         if (selectionType != 2)
             ImGui::EndDisabled();
