@@ -197,6 +197,7 @@ namespace genetic {
         for(int i = 0; i < size; i++) {
             this->entities.push_back(Chromosome(basicGraph));
         }
+        std::sort(this->entities.begin(), this->entities.end());
         this->computeFitnesses();
     }
 
@@ -211,9 +212,16 @@ namespace genetic {
         case Roulette:
             breedSelectRoulette(breedProb, mutationProb);
             break;
+        case RangedRoulette:
+            breedSelectRangedRoulette(breedProb, mutationProb);
+            break;
+        case Uniform:
+            breedSelectUniform(breedProb, mutationProb);
+            break;
         default:
             break;
         }
+        std::sort(this->entities.begin(), this->entities.end());
         this->computeFitnesses();
     }
 
@@ -246,6 +254,72 @@ namespace genetic {
         this->entities = selected;
     }
 
+    void Generation::breedSelectRangedRoulette(double breedProb, double mutationProb) {
+        std::vector<Chromosome> selected;
+        std::vector<double> rangedWeights;
+        for(int i = 0; i < this->size; i++) {
+            rangedWeights.push_back((i + i * i) / 2);
+        }
+        std::uniform_int_distribution<double> rangedRoulette(0, rangedWeights[this->size - 1]);
+        for(int i = 0; i < this->size; i++) {
+            int pos = std::lower_bound(rangedWeights.begin(), rangedWeights.end(), rangedRoulette(this->rng)) - rangedWeights.begin();
+            selected.push_back(this->entities[pos]);
+        }
+        std::bernoulli_distribution breed(breedProb);
+        std::bernoulli_distribution mutation(mutationProb);
+        for(int i = 0; i < this->size / 2; i++) {
+            if(breed(this->rng)) {
+                std::pair<Chromosome, Chromosome> breedingResult = this->breeder.breed(selected[i], selected[i + 1]);
+                if(mutation(this->rng)) {
+                    selected[i] = breedingResult.first.mutate();
+                }
+                else {
+                    selected[i] = breedingResult.first;
+                }
+                if(mutation(this->rng)) {
+                    selected[i + 1] = breedingResult.second.mutate();
+                }
+                else {
+                    selected[i + 1] = breedingResult.second;
+                }
+            }
+        }
+        this->entities = selected;
+    
+    }
+
+    void Generation::breedSelectUniform(double breedProb, double mutationProb) {
+        std::vector<Chromosome> selected;
+        for(int i = 1; i <= this->size; i++) {
+            this->fitnesses[i - 1] += i * this->fitnesses[this->size - 1];
+        }
+        std::uniform_real_distribution<double> roulette(0, this->fitnesses[this->size - 1]);
+        for(int i = 0; i < this->size; i++) {
+            int pos = std::lower_bound(this->fitnesses.begin(), this->fitnesses.end(), roulette(this->rng)) - this->fitnesses.begin();
+            selected.push_back(this->entities[pos]);
+        }
+        std::bernoulli_distribution breed(breedProb);
+        std::bernoulli_distribution mutation(mutationProb);
+        for(int i = 0; i < this->size / 2; i++) {
+            if(breed(this->rng)) {
+                std::pair<Chromosome, Chromosome> breedingResult = this->breeder.breed(selected[i], selected[i + 1]);
+                if(mutation(this->rng)) {
+                    selected[i] = breedingResult.first.mutate();
+                }
+                else {
+                    selected[i] = breedingResult.first;
+                }
+                if(mutation(this->rng)) {
+                    selected[i + 1] = breedingResult.second.mutate();
+                }
+                else {
+                    selected[i + 1] = breedingResult.second;
+                }
+            }
+        }
+        this->entities = selected;
+    }
+    
     int Generation::getSize() {
         return this->size;
     }
@@ -271,8 +345,6 @@ namespace genetic {
             this->fitnesses[i] = this->fitnesses[i - 1] + this->entities[i].getFitness();
         }
     }
-
-
 
     std::pair<Chromosome*, double> Generation::getEntity(int id) {
         if(id < 0 || id >= this->size) {
@@ -410,3 +482,4 @@ namespace genetic {
         }
     }
 }
+
