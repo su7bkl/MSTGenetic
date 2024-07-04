@@ -3,7 +3,7 @@
 #include <algorithm>
 
 namespace gui {
-    GASettingsWindow::GASettingsWindow(GeneticAlgorithm& geneticAlgorithm) : geneticAlgorithm(geneticAlgorithm) {}
+    GASettingsWindow::GASettingsWindow(genetic::GeneticAlgorithm& geneticAlgorithm) : geneticAlgorithm(geneticAlgorithm) {}
 
     void GASettingsWindow::render()
     {

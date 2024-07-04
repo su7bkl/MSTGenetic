@@ -345,7 +345,7 @@ namespace gui {
         }
     }
 
-    DataWindow::DataWindow(genetic::Graph& graph, GeneticAlgorithm& geneticAlgorithm) :
+    DataWindow::DataWindow(genetic::Graph& graph, genetic::GeneticAlgorithm& geneticAlgorithm) :
         graph(graph),
         geneticAlgorithm(geneticAlgorithm)
     {}

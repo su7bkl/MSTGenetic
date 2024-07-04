@@ -3,20 +3,19 @@
 #include "Graph.h"
 #include <vector>
 #include <imgui.h>
-#include "dummy/GeneticAlgorithm.h"
+#include "Genetic.h"
 
 namespace gui {
     class EpochWindow : public BaseWindow
     {
     private:
         genetic::Graph& graph;
-        GeneticAlgorithm& geneticAlgorithm;
+        genetic::GeneticAlgorithm& geneticAlgorithm;
 
         std::vector<int> chromosomesOrder;
         bool chromosomesSortingRequired;
         int selectedChromosome;
 
-        // будет убрано
         std::vector<genetic::Terminals> graphEdges;
 
         void sortChromosomes(ImGuiTableSortSpecs* sortSpecs);
@@ -27,7 +26,7 @@ namespace gui {
         void renderGraphPreview();
 
     public:
-        EpochWindow(genetic::Graph& graph, GeneticAlgorithm& geneticAlgorithm);
+        EpochWindow(genetic::Graph& graph, genetic::GeneticAlgorithm& geneticAlgorithm);
         void render() override;
     };
 }
