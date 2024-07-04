@@ -6,7 +6,10 @@ namespace genetic {
         this->pos = { std::rand() % MAX_X, std::rand() % MAX_Y };
     }
 
-    Vertex::Vertex(int x, int y) {
+    Vertex::Vertex(float xy): Vertex(xy, xy)
+    {
+    }
+    Vertex::Vertex(float x, float y) {
         this->pos = { x, y };
     }
 
@@ -14,11 +17,11 @@ namespace genetic {
         return this->pos;
     }
 
-    int Vertex::getX() {
+    float Vertex::getX() {
         return this->pos.first;
     }
 
-    int Vertex::getY() {
+    float Vertex::getY() {
         return this->pos.second;
     }
 
@@ -26,11 +29,11 @@ namespace genetic {
         this->pos = newPos;
     }
 
-    void Vertex::setX(int newX) {
+    void Vertex::setX(float newX) {
         this->pos.first = newX;
     }
 
-    void Vertex::setY(int newY) {
+    void Vertex::setY(float newY) {
         this->pos.second = newY;
     }
 

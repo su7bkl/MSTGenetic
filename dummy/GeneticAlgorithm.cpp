@@ -2,9 +2,9 @@
 
 GeneticAlgorithm::GeneticAlgorithm(genetic::Graph& graph) :
     graph(graph),
+    breedingType(genetic::BreedingType::SinglePoint),
     breeder(this->breedingType),
     started(false), generationSize(1),
-    breedingType(genetic::BreedingType::SinglePoint),
     selectionType(genetic::SelectionType::Roulette),
     breedingProbability(0.5),
     mutationProbability(0.5),
