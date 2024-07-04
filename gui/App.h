@@ -4,7 +4,7 @@
 #include "gui/EpochWindow.h"
 #include "gui/GAStateWindow.h"
 #include "Graph.h"
-#include "dummy/GeneticAlgorithm.h"
+#include "Genetic.h"
 
 namespace gui {
     class App
@@ -14,7 +14,7 @@ namespace gui {
         bool running;
 
         genetic::Graph graph;
-        GeneticAlgorithm geneticAlgorithm;
+        genetic::GeneticAlgorithm geneticAlgorithm;
 
         DataWindow dataWindow;
         GASettingsWindow gaSettingWindow;

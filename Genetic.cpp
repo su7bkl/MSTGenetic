@@ -363,6 +363,7 @@ namespace genetic {
 
         this->started = true;
         this->generationBuffer.push_back(Generation(this->generationSize, &this->graph, this->selectionType, this->breedingType));
+        this->currentGeneration = this->generationBuffer.begin();
         this->maxGeneration++;
     }
 
@@ -373,6 +374,7 @@ namespace genetic {
         this->started = false;
         this->generationBuffer.clear();
         this->currentGeneration = generationBuffer.begin();
+        this->maxGeneration = 0;
     }
 
     void GeneticAlgorithm::stepForward() {

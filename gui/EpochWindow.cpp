@@ -7,7 +7,7 @@
 #include <format>
 
 namespace gui {
-    EpochWindow::EpochWindow(genetic::Graph& graph, GeneticAlgorithm& geneticAlgorithm) :
+    EpochWindow::EpochWindow(genetic::Graph& graph, genetic::GeneticAlgorithm& geneticAlgorithm) :
         graph(graph),
         geneticAlgorithm(geneticAlgorithm),
         chromosomesSortingRequired(false),
@@ -48,12 +48,12 @@ namespace gui {
             targetRightValue = right;
             break;
         case COLUMN_FUNCTION_VALUE:
-            targetLeftValue = this->geneticAlgorithm.getCurrentGeneration().getEntity(left).second;
-            targetRightValue = this->geneticAlgorithm.getCurrentGeneration().getEntity(right).second;
+            targetLeftValue = this->geneticAlgorithm.getCurrentGeneration()->getEntity(left).second;
+            targetRightValue = this->geneticAlgorithm.getCurrentGeneration()->getEntity(right).second;
             break;
         case COLUMN_EDGES_LENGTH:
-            targetLeftValue = this->geneticAlgorithm.getCurrentGeneration().getEntity(left).first->getGraph()->getTotalEdgeLength();
-            targetRightValue = this->geneticAlgorithm.getCurrentGeneration().getEntity(right).first->getGraph()->getTotalEdgeLength();
+            targetLeftValue = this->geneticAlgorithm.getCurrentGeneration()->getEntity(left).first->getGraph()->getTotalEdgeLength();
+            targetRightValue = this->geneticAlgorithm.getCurrentGeneration()->getEntity(right).first->getGraph()->getTotalEdgeLength();
             break;
         }
 
@@ -94,10 +94,10 @@ namespace gui {
                     this->selectedChromosome = row == this->selectedChromosome ? -1 : row;
 
                 ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%.6f", this->geneticAlgorithm.getCurrentGeneration().getEntity(row).second);
+                ImGui::Text("%.6f", this->geneticAlgorithm.getCurrentGeneration()->getEntity(row).second);
 
                 ImGui::TableSetColumnIndex(2);
-                ImGui::Text("%d", this->geneticAlgorithm.getCurrentGeneration().getEntity(row).first->getGraph()->getTotalEdgeLength());
+                ImGui::Text("%d", this->geneticAlgorithm.getCurrentGeneration()->getEntity(row).first->getGraph()->getTotalEdgeLength());
             }
             ImGui::EndTable();
         }
@@ -128,7 +128,7 @@ namespace gui {
 
             for (int edgeIndex = 0; edgeIndex < this->graphEdges.size(); edgeIndex++) {
                 ImGui::TableSetColumnIndex(edgeIndex + 1);
-                ImGui::Text(this->geneticAlgorithm.getCurrentGeneration().getEntity(this->selectedChromosome).first->getIncluded().at(edgeIndex) ? "1" : "0");
+                ImGui::Text(this->geneticAlgorithm.getCurrentGeneration()->getEntity(this->selectedChromosome).first->getIncluded().at(edgeIndex) ? "1" : "0");
             }
 
             ImGui::EndTable();
@@ -141,7 +141,7 @@ namespace gui {
         ImGui::Text((const char*)u8"Связность графа:");
         ImGui::SameLine();
         ImGui::BeginDisabled();
-        bool isConnected = this->geneticAlgorithm.getCurrentGeneration().getEntity(this->selectedChromosome).first->getGraph()->isConnected();
+        bool isConnected = this->geneticAlgorithm.getCurrentGeneration()->getEntity(this->selectedChromosome).first->getGraph()->isConnected();
         ImGui::Checkbox("##", &isConnected);
         ImGui::EndDisabled();
 
@@ -176,7 +176,7 @@ namespace gui {
                 genetic::Vertex startVertex = this->graph.getVertex(this->graphEdges.at(edgeIndex).first);
                 genetic::Vertex endVertex = this->graph.getVertex(this->graphEdges.at(edgeIndex).second);
 
-                bool isEdgeIncluded = this->geneticAlgorithm.getCurrentGeneration().getEntity(this->selectedChromosome).first->getIncluded().at(edgeIndex);
+                bool isEdgeIncluded = this->geneticAlgorithm.getCurrentGeneration()->getEntity(this->selectedChromosome).first->getIncluded().at(edgeIndex);
 
                 drawList->AddLine(ImVec2(startVertex.getX() + drawOrigin.x, startVertex.getY() + drawOrigin.y), ImVec2(endVertex.getX() + drawOrigin.x, endVertex.getY() + drawOrigin.y), isEdgeIncluded ? EDGE_INCLUDED_COLOR : EDGE_COLOR, EDGE_THICKNESS);
             }
@@ -248,7 +248,7 @@ namespace gui {
 
         // кнопка "эпоха вперёд"
         if (ImGui::Button((const char*)u8"Эпоха вперёд")) {
-            this->geneticAlgorithm.step();
+            this->geneticAlgorithm.stepForward();
             this->chromosomesSortingRequired = true;
         }
 
@@ -256,7 +256,8 @@ namespace gui {
 
         // кнопка "эпоха назад"
         if (ImGui::Button((const char*)u8"Эпоха назад")) {
-            // пока ничего
+            this->geneticAlgorithm.stepBack();
+            this->chromosomesSortingRequired = true;
         }
 
         // таблица хромосом

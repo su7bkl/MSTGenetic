@@ -1,15 +1,15 @@
 #pragma once
 #include "gui/BaseWindow.h"
-#include "dummy/GeneticAlgorithm.h"
+#include "Genetic.h"
 
 namespace gui {
     class GASettingsWindow : public BaseWindow
     {
     private:
-        GeneticAlgorithm& geneticAlgorithm;
+        genetic::GeneticAlgorithm& geneticAlgorithm;
 
     public:
-        GASettingsWindow(GeneticAlgorithm& geneticAlgorithm);
+        GASettingsWindow(genetic::GeneticAlgorithm& geneticAlgorithm);
         void render() override;
     };
 }
