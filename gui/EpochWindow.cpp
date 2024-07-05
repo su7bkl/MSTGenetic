@@ -220,7 +220,7 @@ namespace gui {
             }
 
             // отрисовка вершин
-            for (int vertexIndex = 0; vertexIndex < this->graph.getVeretexCount(); vertexIndex++) {
+            for (int vertexIndex = 0; vertexIndex < this->graph.getVertexCount(); vertexIndex++) {
                 genetic::Vertex currentVertex = this->graph.getVertex(vertexIndex);
 
                 drawList->AddCircleFilled(ImVec2(currentVertex.getX() + drawOrigin.x, currentVertex.getY() + drawOrigin.y), VERTEX_SIZE, VERTEX_COLOR);
@@ -254,7 +254,7 @@ namespace gui {
                     this->chromosomesOrder.at(i) = i;
 
                 this->graphEdges.clear();
-                for (int startVertexIndex = 0; startVertexIndex < this->graph.getVeretexCount(); startVertexIndex++) {
+                for (int startVertexIndex = 0; startVertexIndex < this->graph.getVertexCount(); startVertexIndex++) {
                     for (int endVertexIndex = 0; endVertexIndex < startVertexIndex; endVertexIndex++) {
                         if (this->graph.getEdgeLength({ startVertexIndex, endVertexIndex }) == 0)
                             continue;

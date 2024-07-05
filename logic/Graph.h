@@ -41,7 +41,7 @@ namespace genetic {
 		Graph(std::vector<Vertex> vertices, std::vector<Edge>edges );
 		void addVertex(Vertex vertex);
 		void addEdge(Edge);
-		int getVeretexCount();
+		int getVertexCount();
 		int getEdgeCount();
 		std::vector<Vertex> getVertices();
 		Vertex getVertex(int id);

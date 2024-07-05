@@ -11,7 +11,7 @@
 namespace gui {
     void DataWindow::ensureVertexCount(int vertexCount)
     {
-        int difference = vertexCount - this->graph.getVeretexCount();
+        int difference = vertexCount - this->graph.getVertexCount();
 
         if (difference == 0)
             return;
@@ -110,11 +110,11 @@ namespace gui {
             return false;
 
         // запись числа вершин
-        exportFile << this->graph.getVeretexCount() << "\n";
+        exportFile << this->graph.getVertexCount() << "\n";
 
         // запись матрицы смежности
-        for (int startVertexIndex = 0; startVertexIndex < this->graph.getVeretexCount(); startVertexIndex++) {
-            for (int endVertexIndex = 0; endVertexIndex < this->graph.getVeretexCount(); endVertexIndex++) {
+        for (int startVertexIndex = 0; startVertexIndex < this->graph.getVertexCount(); startVertexIndex++) {
+            for (int endVertexIndex = 0; endVertexIndex < this->graph.getVertexCount(); endVertexIndex++) {
                 exportFile << this->graph.getEdgeLength({ startVertexIndex, endVertexIndex }) << " ";
             }
 
@@ -122,7 +122,7 @@ namespace gui {
         }
 
         // запись координат вершин
-        for (int vertexIndex = 0; vertexIndex < this->graph.getVeretexCount(); vertexIndex++) {
+        for (int vertexIndex = 0; vertexIndex < this->graph.getVertexCount(); vertexIndex++) {
             exportFile << this->graph.getVertex(vertexIndex).getX() << " " << this->graph.getVertex(vertexIndex).getY() << "\n";
         }
 
@@ -143,7 +143,7 @@ namespace gui {
             std::bernoulli_distribution createEdge(edgeProbability);
             std::uniform_int_distribution<int> edgeLength(minEdgeLength, maxEdgeLength);
 
-            for (int startVertexIndex = 0; startVertexIndex < this->graph.getVeretexCount(); startVertexIndex++) {
+            for (int startVertexIndex = 0; startVertexIndex < this->graph.getVertexCount(); startVertexIndex++) {
                 for (int endVertexIndex = 0; endVertexIndex < startVertexIndex; endVertexIndex++) {
                     if (createEdge(rng))
                         this->ensureEdgeLength(startVertexIndex, endVertexIndex, edgeLength(rng));
@@ -176,7 +176,7 @@ namespace gui {
         constexpr ImGuiTableFlags ADJACENCY_TABLE_FLAGS = ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Resizable;
         constexpr ImGuiTableColumnFlags ADJACENCY_COLUMN_FLAGS = ImGuiTableColumnFlags_WidthFixed;
 
-        const int vertexCount = this->graph.getVeretexCount();
+        const int vertexCount = this->graph.getVertexCount();
 
         if (ImGui::BeginTable("##adjacency_matrix_table", vertexCount + 1, ADJACENCY_TABLE_FLAGS, ImVec2(0, 350))) {
             ImGui::TableSetupColumn("##", ADJACENCY_COLUMN_FLAGS);
@@ -235,7 +235,7 @@ namespace gui {
             constexpr ImVec2 VERTEX_LABEL_OFFSET = ImVec2(5, 5);
             constexpr float VERTEX_SIZE = 10;
 
-            const int vertexCount = this->graph.getVeretexCount();
+            const int vertexCount = this->graph.getVertexCount();
 
             // отрисовка рёбер
             for (int startVertexIndex = 0; startVertexIndex < vertexCount; startVertexIndex++) {
@@ -357,7 +357,7 @@ namespace gui {
                 ImGui::BeginDisabled();
 
             // ввод числа вершин
-            int vertexCount = this->graph.getVeretexCount();
+            int vertexCount = this->graph.getVertexCount();
             ImGui::InputInt((const char*)u8"Число вершин", &vertexCount, 1, 10);
             vertexCount = std::clamp(vertexCount, 2, 500);
             this->ensureVertexCount(vertexCount);

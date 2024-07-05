@@ -6,7 +6,7 @@ namespace genetic {
         this->pos = { std::rand() % MAX_X, std::rand() % MAX_Y };
     }
 
-    Vertex::Vertex(float xy): Vertex(xy, xy)
+    Vertex::Vertex(float xy) : Vertex(xy, xy)
     {
     }
     Vertex::Vertex(float x, float y) {
@@ -98,7 +98,7 @@ namespace genetic {
         this->ajacencyMatrix[edge.first.second][edge.first.first] = edge.second;
     }
 
-    int Graph::getVeretexCount() {
+    int Graph::getVertexCount() {
         return this->vertexCount;
     }
 
@@ -198,7 +198,7 @@ namespace genetic {
     int Graph::getUpperMSTEstiamate() {
         int edgeId = 0;
         int result = 0;
-        for (int i = 1; i < this->getVeretexCount(); i++) {
+        for (int i = 1; i < this->getVertexCount(); i++) {
             for (int j = 0; j < i; j++) {
                 if (edgeId == this->vertexCount - 1) {
                     return result;
