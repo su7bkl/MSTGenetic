@@ -193,21 +193,23 @@ namespace gui {
             ImVec2 drawOrigin = ImGui::GetCursorScreenPos();
 
             // настрока отрисовки (можно вынести в отдельное окно)
+            constexpr ImU32 VERTEX_COLOR = IM_COL32(255, 255, 255, 255);
+            constexpr ImU32 EDGE_LABEL_COLOR = IM_COL32(255, 255, 255, 255);
+            constexpr ImU32 VERTEX_LABEL_COLOR = IM_COL32(15, 15, 15, 255);
+            constexpr ImVec2 VERTEX_LABEL_OFFSET = ImVec2(5, 5);
+            constexpr ImVec2 EDGE_LABEL_OFFSET = ImVec2(5, 5);
             constexpr ImU32 EDGE_COLOR = IM_COL32(127, 127, 127, 255);
             constexpr ImU32 EDGE_INCLUDED_COLOR = IM_COL32(0, 255, 0, 255);
             constexpr float EDGE_THICKNESS = 2;
             constexpr float EDGE_INCLUDED_THICKNESS = 3;
             constexpr float EDGE_DASH_INTERVAL = 15;
-
-            constexpr ImU32 VERTEX_COLOR = IM_COL32(255, 255, 255, 255);
-            constexpr ImU32 VERTEX_LABEL_COLOR = IM_COL32(0, 0, 0, 255);
-            constexpr ImVec2 VERTEX_LABEL_OFFSET = ImVec2(5, 5);
             constexpr float VERTEX_SIZE = 10;
 
             // отрисовка рёбер
             for (int edgeIndex = 0; edgeIndex < this->graphEdges.size(); edgeIndex++) {
                 genetic::Vertex startVertex = this->graph.getVertex(this->graphEdges.at(edgeIndex).first);
                 genetic::Vertex endVertex = this->graph.getVertex(this->graphEdges.at(edgeIndex).second);
+                double edgeSize = this->graph.getEdgeLength({ this->graphEdges.at(edgeIndex).first, this->graphEdges.at(edgeIndex).second });
 
                 bool isEdgeIncluded = this->geneticAlgorithm.getCurrentGeneration()->getEntity(this->selectedChromosome).first->getIncluded().at(edgeIndex);
                 ImVec2 startPos = ImVec2(startVertex.getX() + drawOrigin.x, startVertex.getY() + drawOrigin.y);
@@ -217,6 +219,7 @@ namespace gui {
                     drawList->AddLine(startPos, endPos, EDGE_INCLUDED_COLOR, EDGE_INCLUDED_THICKNESS);
                 else
                     this->drawDashLine(drawList, startPos, endPos, EDGE_COLOR, EDGE_THICKNESS, EDGE_DASH_INTERVAL);
+                drawList->AddText(ImVec2((startVertex.getX() + endVertex.getX()) / 2 + drawOrigin.x - EDGE_LABEL_OFFSET.x, (startVertex.getY() + endVertex.getY()) / 2 + drawOrigin.y - EDGE_LABEL_OFFSET.y), EDGE_LABEL_COLOR, std::to_string((int)edgeSize).c_str());
             }
 
             // отрисовка вершин
